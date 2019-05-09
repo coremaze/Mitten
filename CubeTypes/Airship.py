@@ -10,8 +10,9 @@ class Airship():
         self.pathRotation = pathRotation
         self.destination = destination
         self.flightState = flightState
+    # TODO: Remove any reference to self in below static method
     @classmethod
-    def Import(self, data):
+    def Import(data):
         pos = 0
         self.id = struct.unpack("<q", data[pos : pos+8]); pos += 8
         struct.unpack("<I", data[pos : pos+4]); pos += 4 #unknown

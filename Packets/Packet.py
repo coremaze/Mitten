@@ -1,6 +1,6 @@
 class Packet():
     @staticmethod
-    def Import(self, data):
+    def Import(data):
         raise NotImplemented("Method must be implemented")
     def Export(self):
         raise NotImplemented("Method must be implemented")

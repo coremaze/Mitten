@@ -3,7 +3,7 @@ class AirTrafficPacket():
     def __init__(self, airships):
         self.airships = airships
     @staticmethod
-    def Import(self, data):
+    def Import(data):
         raise NotImplemented("Method must be implemented")
     def Export(self):
         raise NotImplemented("Method must be implemented")
