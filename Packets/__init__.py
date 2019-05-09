@@ -1,2 +1,3 @@
 from .Packet import Packet
-from .Packet import AirTrafficPacket
+from .AirTrafficPacket import AirTrafficPacket
+from .HitPacket import HitPacket 

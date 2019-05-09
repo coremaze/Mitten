@@ -1,7 +1,7 @@
 import struct
 import io
-import CubeTypes.LongVector3
-import CubeTypes.FloatVector3
+from CubeTypes import LongVector3
+from CubeTypes import FloatVector3
 class HitPacket():
     pID = 0x7
     def __init__(self, attackerID, targetID, dmg, isCrit, stunDur, hitPos,

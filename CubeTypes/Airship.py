@@ -1,5 +1,5 @@
 import struct
-from ..CubeTypes import LongVector3
+from CubeTypes import LongVector3
 class Airship():
     def __init__(self, ID, position, velocity, rotation, station, pathRotation, destination, flightState):
         self.id = ID
