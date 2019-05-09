@@ -7,11 +7,11 @@ class ChatPacket():
     # Removed the 'self' parameter from Import because it's static
     @staticmethod
     def Import(data):
-        dID = struct.unpack('<I', data.read(4))
-        if (pID is not dID) :
-            raise ValueError(f'Received packet ID of {dID} when {pID} was expected.')
+        dID, = struct.unpack('<I', data.read(4))
+        if (ChatPacket.pID is not dID) :
+            raise ValueError(f'Received packet ID of {dID} when {ChatPacket.pID} was expected.')
 
-        messageLength = struct.unpack('<I', data.read(4))
+        messageLength, = struct.unpack('<I', data.read(4))
         # Multiplying by 2 because each character uses 2 bytes
         message  = data.read(messageLength*2).decode('utf-16le')
         return ChatPacket(message)

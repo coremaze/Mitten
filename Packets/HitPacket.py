@@ -20,20 +20,20 @@ class HitPacket():
     @staticmethod
     def Import(data):
         dID = struct.unpack('<I', data.read(4))
-        if (pID is not dID) :
-            raise ValueError(f'Received packet ID of {dID} when {pID} was expected.')
+        if (HitPacket.pID is not dID) :
+            raise ValueError(f'Received packet ID of {dID} when {HitPacket.pID} was expected.')
 
-        attackerID  = struct.unpack('<Q', data.read(8))
-        targetID    = struct.unpack('<Q', data.read(8))
-        damage      = struct.unpack('<f', data.read(4))
-        isCritical  = struct.unpack('<I', data.read(4))
-        stunDur     = struct.unpack('<I', data.read(4))
+        attackerID,  = struct.unpack('<Q', data.read(8))
+        targetID,    = struct.unpack('<Q', data.read(8))
+        damage,      = struct.unpack('<f', data.read(4))
+        isCritical,  = struct.unpack('<I', data.read(4))
+        stunDur,     = struct.unpack('<I', data.read(4))
         data.read(4) # Padding
-        hitPos      = LongVector3.Import(data.read(8*3))
-        hitDir      = FloatVector3.Import(data.read(8*3))
-        isYellow    = struct.unpack('<?', data.read(1))
-        hitType     = struct.unpack('<B', data.read(1))
-        showLight   = struct.unpack('<?', data.read(1))
+        hitPos,      = LongVector3.Import(data.read(8*3))
+        hitDir,      = FloatVector3.Import(data.read(8*3))
+        isYellow,    = struct.unpack('<?', data.read(1))
+        hitType,     = struct.unpack('<B', data.read(1))
+        showLight,   = struct.unpack('<?', data.read(1))
         data.read(1) # Padding
 
         return HitPacket(attackerID, targetID, damage, isCritical, stunDur, hitPos,
