@@ -10,4 +10,4 @@ class LongVector3():
         x, y, z = struct.unpack("<qqq")
         return LongVector3(x, y, z)
     def Export(self):
-        return struct.unpack("<qqq", self.x, self.y, self.z)
+        return struct.pack("<qqq", self.x, self.y, self.z)
