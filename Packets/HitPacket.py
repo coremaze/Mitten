@@ -29,8 +29,8 @@ class HitPacket():
         isCritical,  = struct.unpack('<I', data.read(4))
         stunDur,     = struct.unpack('<I', data.read(4))
         data.read(4) # Padding
-        hitPos,      = LongVector3.Import(data.read(8*3))
-        hitDir,      = FloatVector3.Import(data.read(8*3))
+        hitPos       = LongVector3.Import(data.read(8*3))
+        hitDir       = FloatVector3.Import(data.read(4*3))
         isYellow,    = struct.unpack('<?', data.read(1))
         hitType,     = struct.unpack('<B', data.read(1))
         showLight,   = struct.unpack('<?', data.read(1))
