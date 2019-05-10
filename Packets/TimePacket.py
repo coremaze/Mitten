@@ -1,5 +1,6 @@
 import struct
 import io
+from net import recv2
 class TimePacket():
     pID = 0x5
     def __init__(self, day, time):
@@ -7,13 +8,9 @@ class TimePacket():
         self.time = time
     
     @staticmethod
-    def Import(data):
-        dID, = struct.unpack('<I', data.read(4))
-        if (TimePacket.pID is not dID) :
-            raise ValueError(f'Received packet ID of {dID} when {TimePacket.pID} was expected.')
-
-        day,  = struct.unpack('<I', data.read(4))
-        time, = struct.unpack('<I', data.read(4))
+    def Recv(sock):
+        day,  = struct.unpack('<I', recv2(sock, 4))
+        time, = struct.unpack('<I', recv2(sock, 4))
         return TimePacket(day,time)
 
     def Export(self):
@@ -24,3 +21,4 @@ class TimePacket():
 
     def Send(self, sock):
         return sock.send(self.Export())
+        

@@ -18,23 +18,19 @@ class HitPacket():
         self.showLight  = showLight
 
     @staticmethod
-    def Import(data):
-        dID = struct.unpack('<I', data.read(4))
-        if (HitPacket.pID is not dID) :
-            raise ValueError(f'Received packet ID of {dID} when {HitPacket.pID} was expected.')
-
-        attackerID,  = struct.unpack('<Q', data.read(8))
-        targetID,    = struct.unpack('<Q', data.read(8))
-        damage,      = struct.unpack('<f', data.read(4))
-        isCritical,  = struct.unpack('<I', data.read(4))
-        stunDur,     = struct.unpack('<I', data.read(4))
-        data.read(4) # Padding
-        hitPos       = LongVector3.Import(data.read(8*3))
-        hitDir       = FloatVector3.Import(data.read(4*3))
-        isYellow,    = struct.unpack('<?', data.read(1))
-        hitType,     = struct.unpack('<B', data.read(1))
-        showLight,   = struct.unpack('<?', data.read(1))
-        data.read(1) # Padding
+    def Recv(sock):
+        attackerID,  = struct.unpack('<Q', recv2(sock, 8))
+        targetID,    = struct.unpack('<Q', recv2(sock, 8))
+        damage,      = struct.unpack('<f', recv2(sock, 4))
+        isCritical,  = struct.unpack('<I', recv2(sock, 4))
+        stunDur,     = struct.unpack('<I', recv2(sock, 4))
+        recv2(sock, 4) # Padding
+        hitPos       = LongVector3.Import(recv2(sock, 8*3))
+        hitDir       = FloatVector3.Import(recv2(sock, 4*3))
+        isYellow,    = struct.unpack('<?', recv2(sock, 1))
+        hitType,     = struct.unpack('<B', recv2(sock, 1))
+        showLight,   = struct.unpack('<?', recv2(sock, 1))
+        recv2(sock, 1) # Padding
 
         return HitPacket(attackerID, targetID, damage, isCritical, stunDur, hitPos,
             hitDir, isYellow, hitType, showLight)

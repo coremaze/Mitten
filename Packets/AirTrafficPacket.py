@@ -1,6 +1,7 @@
 import struct
 import io
 from CubeTypes import Airship
+from net import recv2
 class AirTrafficPacket():
     pID = 0x3
     def __init__(self, airships):
@@ -8,16 +9,11 @@ class AirTrafficPacket():
         self.count = len(airships)
 
     @staticmethod
-    def Import(data):
-        dID, = struct.unpack('<I', data.read(4))
-        if (AirTrafficPacket.pID is not dID) :
-            raise ValueError(f'Received packet ID of {dID} when {AirTrafficPacket.pID} was expected.')
-
-        airshipsCount, = struct.unpack('<I', data.read(4))
+    def Recv(sock):
+        airshipsCount, = struct.unpack('<I', recv2(sock, 4))
         airships = []
         for _ in range(airshipsCount):
-            airships += Airship.Import(data.read(120))
-        
+            airships += Airship.Import(recv2(sock, 120))
         return AirTrafficPacket(airships)
 
     def Export(self):
