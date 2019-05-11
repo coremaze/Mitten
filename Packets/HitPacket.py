@@ -20,7 +20,7 @@ class HitPacket(Packet):
         self.showLight  = showLight
 
     @staticmethod
-    def Recv(self, connection, fromClient):
+    def Recv(connection, fromClient):
         recv = [connection.RecvServer, connection.RecvClient][fromClient]
         attackerID,  = struct.unpack('<Q', recv(8))
         targetID,    = struct.unpack('<Q', recv(8))

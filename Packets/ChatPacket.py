@@ -15,7 +15,7 @@ class ChatPacket(Packet):
         self.entityID = entityID
 
     @staticmethod
-    def Recv(self, connection, fromClient):
+    def Recv(connection, fromClient):
         recv = [connection.RecvServer, connection.RecvClient][fromClient]
         
         if not fromClient:

@@ -10,7 +10,7 @@ class AirTrafficPacket(Packet):
         self.count = len(airships)
 
     @staticmethod
-    def Recv(self, connection, fromClient):
+    def Recv(connection, fromClient):
         recv = [connection.RecvServer, connection.RecvClient][fromClient]
         airshipsCount, = struct.unpack('<I', recv(4))
         airships = []

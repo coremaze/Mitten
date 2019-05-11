@@ -9,7 +9,7 @@ class TimePacket(Packet):
         self.time = time
     
     @staticmethod
-    def Recv(self, connection, fromClient):
+    def Recv(connection, fromClient):
         recv = [connection.RecvServer, connection.RecvClient][fromClient]
         day,  = struct.unpack('<I', recv(4))
         time, = struct.unpack('<I', recv(4))
