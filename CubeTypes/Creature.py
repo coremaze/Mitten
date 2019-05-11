@@ -3,7 +3,7 @@ import io
 from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
 from CubeTypes import Appearance
-
+from CubeTypes import IntVector3
 class Creature():
     size = 0x1168
     def __init__(self, position, orientation, velocity, acceleration, retreat, headRotation, physicsFlags, hostility,
@@ -105,7 +105,40 @@ class Creature():
         combo, = struct.unpack('<i', data.read(4))
         lastHitTime, = struct.unpack('<i', data.read(4))
         appearance = Appearance.Import(data)
-        creatureFlags = struct.unpack('<i', data.read(4))
+        creatureFlags, = struct.unpack('<H', data.read(2))
+        rollTime, = struct.unpack('<i', data.read(4))
+        stunTime, = struct.unpack('<i', data.read(4))
+        slowedTime, = struct.unpack('<i', data.read(4))
+        iceEffectTime, = struct.unpack('<i', data.read(4))
+        windEffectTime, = struct.unpack('<i', data.read(4))
+        showPatchTime, = struct.unpack('<f', data.read(4))
+        classType, = struct.unpack('<B', data.read(1))
+        specialization, = struct.unpack('<B', data.read(1))
+        chargedMP, = struct.unpack('<f', data.read(4))
+        unkIntVec1 = IntVector3.Import(data)
+        unkIntVec2 = IntVector3.Import(data)
+        rayHit = FloatVector3.Import(data)
+        HP, = struct.unpack('<f', data.read(4))
+        MP, = struct.unpack('<f', data.read(4))
+        blockPower, = struct.unpack('<f', data.read(4))
+        HPMultiplier, = struct.unpack('<f', data.read(4))
+        attackSpeedMultiplier, = struct.unpack('<f', data.read(4))
+        damageMultiplier, = struct.unpack('<f', data.read(4))
+        armorMultiplier, = struct.unpack('<f', data.read(4))
+        resistanceMultiplier, = struct.unpack('<f', data.read(4))
+        unkByte1, = struct.unpack('<B', data.read(1))
+        unkByte2, = struct.unpack('<B', data.read(1))
+        level, = struct.unpack('<i', data.read(4))
+        XP, = struct.unpack('<i', data.read(4))
+        parentOwner, = struct.unpack('<q', data.read(8))
+        unkLong1 = struct.unpack('<q', data.read(8))
+        powerBase = struct.unpack('<B', data.read(1))
+        unkInt1 = struct.unpack('<i', data.read(4))
+        unkInt2 = struct.unpack('<i', data.read(4))
+        spawnPosition = LongVector3.Import(data)
+        unkIntVec3 = IntVector3.Import(data)
+        unkByte3 = struct.unpack('<B', data.read(1))
+
 
 
     def Export(self):

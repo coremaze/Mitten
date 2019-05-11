@@ -3,3 +3,4 @@ from .LongVector3 import LongVector3
 from .FloatVector3 import FloatVector3
 from .Creature import Creature
 from .Appearance import Appearance
+from .IntVector3 import IntVector3
