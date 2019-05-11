@@ -2,6 +2,7 @@ import struct
 import io
 from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
+from CubeTypes import Appearance
 
 class Creature():
     size = 0x1168
@@ -90,20 +91,21 @@ class Creature():
 
     @classmethod
     def Import(data):
-        position = LongVector3.Import(data.read(LongVector3.size))
-        orientation = FloatVector3.Import(data.read(FloatVector3.size))
-        velocity = FloatVector3.Import(data.read(FloatVector3.size))
-        acceleration = FloatVector3.Import(data.read(FloatVector3.size))
-        retreat = FloatVector3.Import(data.read(FloatVector3.size))
-        headRotation = struct.unpack('<f', data.read(4))
-        physicsFlags = struct.unpack('<I', data.read(4))
-        hostility = struct.unpack('<B', data.read(1))
-        creatureType = struct.unpack('<i', data.read(4))
-        mode = struct.unpack('<B', data.read(1))
-        modeTimer = struct.unpack('<i', data.read(4))
-        combo = struct.unpack('<i', data.read(4))
-        lastHitTime = struct.unpack('<i', data.read(4))
-        #not complete
+        position = LongVector3.Import(data)
+        orientation = FloatVector3.Import(data)
+        velocity = FloatVector3.Import(data)
+        acceleration = FloatVector3.Import(data)
+        retreat = FloatVector3.Import(data)
+        headRotation, = struct.unpack('<f', data.read(4))
+        physicsFlags, = struct.unpack('<I', data.read(4))
+        hostility, = struct.unpack('<B', data.read(1))
+        creatureType, = struct.unpack('<i', data.read(4))
+        mode, = struct.unpack('<B', data.read(1))
+        modeTimer, = struct.unpack('<i', data.read(4))
+        combo, = struct.unpack('<i', data.read(4))
+        lastHitTime, = struct.unpack('<i', data.read(4))
+        appearance = Appearance.Import(data)
+        creatureFlags = struct.unpack('<i', data.read(4))
 
 
     def Export(self):
