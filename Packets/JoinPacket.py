@@ -15,7 +15,17 @@ class JoinPacket(Packet):
         
         unknown, = struct.unpack('<I', recv(4))
         creatureID, = struct.unpack('<q', recv(8))
-        creature = Creature.Import(io.BytesIO(recv(Creature.size)))
+
+        #debugging
+        data = recv(Creature.size)
+        with open('originalcreature.dat', 'wb') as f:
+            f.write(data)
+        
+        creature = Creature.Import(io.BytesIO(data))
+        with open('newcreature.dat', 'wb') as f:
+            f.write(creature.Export())
+
+            
         return JoinPacket(unknown, creatureID, creature)
 
     def Export(self, toServer):
