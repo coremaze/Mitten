@@ -52,7 +52,7 @@ class Connection():
             else:
                 print(f'Invalid packet ID from Client: {pID}')
                 self.Close()
-            packet = thisClass.Recv(self, clientSide=True)
+            packet = thisClass.Recv(self, fromClient=True)
 
             #Handle plugins................
 
@@ -73,7 +73,7 @@ class Connection():
             else:
                 print(f'Invalid packet ID from Client: {pID}')
                 self.Close()
-            packet = thisClass.Recv(self, clientSide=False)
+            packet = thisClass.Recv(self, fromClient=False)
 
             #Handle plugins................
 
