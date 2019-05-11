@@ -10,19 +10,22 @@ class AirTrafficPacket(Packet):
         self.count = len(airships)
 
     @staticmethod
-    def Recv(sock):
-        airshipsCount, = struct.unpack('<I', recv2(sock, 4))
+    def Recv(self, connection, fromClient):
+        recv = [connection.RecvServer, connection.RecvClient][fromClient]
+        airshipsCount, = struct.unpack('<I', recv(4))
         airships = []
         for _ in range(airshipsCount):
-            airships += Airship.Import(recv2(sock, 120))
+            airships += Airship.Import(recv(120))
         return AirTrafficPacket(airships)
 
-    def Export(self):
-        packet  = struct.pack('<I', pID)
-        packet += struct.pack('<I', self.count)
+    def Export(self, toServer):
+        packetByteList = []
+        packetByteList.append( struct.pack('<I', pID) )
+        packetByteList.append( struct.pack('<I', self.count) )
         for ship in self.airships:
-            packet += ship.Export()
-        return packet
+            packetByteList.append( ship.Export() )
+        return b''.join(packetByteList)
 
-    def Send(self, sock):
-        return sock.send(self.Export())
+    def Send(self, connection, toServer):
+        send = [connection.SendClient, connection.SendServer][toServer]
+        return send(self.Export(toServer))

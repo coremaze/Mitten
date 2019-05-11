@@ -1,8 +1,8 @@
 class Packet():
     @staticmethod
-    def Import(data):
+    def Recv(self, connection, fromClient):
         raise NotImplemented("Method must be implemented")
-    def Export(self):
+    def Export(self, toServer):
         raise NotImplemented("Method must be implemented")
-    def Send(self, sock):
+    def Send(self, connection, toServer):
         raise NotImplemented("Method must be implemented")

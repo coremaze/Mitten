@@ -9,17 +9,19 @@ class TimePacket(Packet):
         self.time = time
     
     @staticmethod
-    def Recv(sock):
-        day,  = struct.unpack('<I', recv2(sock, 4))
-        time, = struct.unpack('<I', recv2(sock, 4))
-        return TimePacket(day,time)
+    def Recv(self, connection, fromClient):
+        recv = [connection.RecvServer, connection.RecvClient][fromClient]
+        day,  = struct.unpack('<I', recv(4))
+        time, = struct.unpack('<I', recv(4))
+        return TimePacket(day, time)
 
-    def Export(self):
+    def Export(self, toServer):
         packet  = struct.pack('<I', pID)
         packet += struct.pack('<I', self.day)
         packet += struct.pack('<I', self.time)
         return packet
 
-    def Send(self, sock):
-        return sock.send(self.Export())
+    def Send(self, connection, toServer):
+        send = [connection.SendClient, connection.SendServer][toServer]
+        return send(self.Export(toServer))
         
