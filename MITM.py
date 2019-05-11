@@ -1,6 +1,7 @@
 import Packets
 import socket
 from threading import Thread
+import struct
 PACKETS_CLASSES = Packets.classes
 
 INTERNAL_SERVER = ('localhost', 12344)
@@ -40,11 +41,45 @@ class Connection():
     
     def HandleClient(self):
         while not self.closed:
-            self.SendServer(self.RecvClient(4))
+            #self.SendServer(self.RecvClient(4))
+            pID, = struct.unpack('<I', self.RecvClient(4))
+
+            #Find the class for this packet
+            for packet in PACKETS_CLASSES:
+                if packet.pID == pID:
+                    thisClass = packet
+                    break
+            else:
+                print(f'Invalid packet ID from Client: {pID}')
+                self.Close()
+            packet = thisClass.Recv(self, clientSide=True)
+
+            #Handle plugins................
+
+            #Export and send
+            packet.Send(self, toServer=True)
+            
             
     def HandleServer(self):
         while not self.closed:
-            self.SendClient(self.RecvServer(4))
+            #self.SendClient(self.RecvServer(4))
+            pID, = struct.unpack('<I', self.RecvServer(4))
+            
+            #Find the class for this packet
+            for packet in PACKETS_CLASSES:
+                if packet.pID == pID:
+                    thisClass = packet
+                    break
+            else:
+                print(f'Invalid packet ID from Client: {pID}')
+                self.Close()
+            packet = thisClass.Recv(self, clientSide=False)
+
+            #Handle plugins................
+
+            #Export and send
+            packet.Send(self, toServer=False)
+            
             
     def Close(self):
         self.closed = True
