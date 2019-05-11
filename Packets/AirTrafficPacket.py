@@ -15,7 +15,7 @@ class AirTrafficPacket(Packet):
         airshipsCount, = struct.unpack('<I', recv(4))
         airships = []
         for _ in range(airshipsCount):
-            airships += Airship.Import(recv(120))
+            airships += Airship.Import(recv(Airship.size))
         return AirTrafficPacket(airships)
 
     def Export(self, toServer):

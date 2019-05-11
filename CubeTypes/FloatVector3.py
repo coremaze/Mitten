@@ -1,5 +1,6 @@
 import struct
 class FloatVector3():
+    size = 12
     def __init__(self, x, y, z):
         self.x = x
         self.y = y

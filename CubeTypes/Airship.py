@@ -4,6 +4,7 @@ from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
 
 class Airship():
+    size = 120
     def __init__(self, ID, position, velocity, rotation, station, pathRotation, destination, flightState):
         self.id = ID
         self.position       = position
