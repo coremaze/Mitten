@@ -137,4 +137,5 @@ class Appearance():
         dataList.append( self.footOffset.Export() )
         dataList.append( self.tailOffset.Export() )
         dataList.append( self.wingOffset.Export() )
+        return b''.join(dataList)
         
