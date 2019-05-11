@@ -4,6 +4,7 @@ from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
 from CubeTypes import Appearance
 from CubeTypes import IntVector3
+from CubeTypes import Item
 class Creature():
     size = 0x1168
     def __init__(self, position, orientation, velocity, acceleration, retreat, headRotation, physicsFlags, hostility,
@@ -131,14 +132,37 @@ class Creature():
         level, = struct.unpack('<i', data.read(4))
         XP, = struct.unpack('<i', data.read(4))
         parentOwner, = struct.unpack('<q', data.read(8))
-        unkLong1 = struct.unpack('<q', data.read(8))
-        powerBase = struct.unpack('<B', data.read(1))
-        unkInt1 = struct.unpack('<i', data.read(4))
-        unkInt2 = struct.unpack('<i', data.read(4))
+        unkLong1, = struct.unpack('<q', data.read(8))
+        powerBase, = struct.unpack('<B', data.read(1))
+        unkInt1, = struct.unpack('<i', data.read(4))
+        unkInt2, = struct.unpack('<i', data.read(4))
         spawnPosition = LongVector3.Import(data)
-        unkIntVec3 = IntVector3.Import(data)
-        unkByte3 = struct.unpack('<B', data.read(1))
-
+        unkIntVec3, = IntVector3.Import(data)
+        unkByte3, = struct.unpack('<B', data.read(1))
+        consumable = Item.Import(data)
+        equipment1 = Item.Import(data)
+        equipment2 = Item.Import(data)
+        equipment3 = Item.Import(data)
+        equipment4 = Item.Import(data)
+        equipment5 = Item.Import(data)
+        equipment6 = Item.Import(data)
+        equipment7 = Item.Import(data)
+        equipment8 = Item.Import(data)
+        equipment9 = Item.Import(data)
+        equipment10 = Item.Import(data)
+        equipment11 = Item.Import(data)
+        equipment12 = Item.Import(data)
+        equipment13 = Item.Import(data)
+        name = data.read(16).decode('utf-16le')
+        manaCubes, = struct.unpack('<i', data.read(4))
+        return Creature(position, orientation, velocity, acceleration, retreat, headRotation, physicsFlags, hostility,
+                 creatureType, mode, modeTimer, combo, lastHitTime, appearance, creatureFlags, rollTime, stunTime,
+                 slowedTime, iceEffectTime, windEffectTime, showPatchTime, classType, specialization, chargedMP, unkIntVec1,
+                 unkIntVec2, rayHit, HP, MP, blockPower, HPMultiplier, attackSpeedMultiplier, damageMultiplier, armorMultiplier,
+                 resistanceMultiplier, unkByte1, unkByte2, level, XP, parentOwner, unkLong1, powerBase, unkInt1, unkInt2,
+                 spawnPosition, unkIntVec3, unkByte3, consumable, equipment1, equipment2, equipment3, equipment4, equipment5,
+                 equipment6, equipment7 , equipment8 , equipment9 , equipment10, equipment11, equipment12, equipment13,
+                 name, skill1, skill2, skill3, skill4, skill5, skill6, skill7, skill8, skill9, skill10, skill11, manaCubes)
 
 
     def Export(self):
