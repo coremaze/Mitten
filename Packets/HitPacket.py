@@ -3,7 +3,8 @@ import io
 from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
 from net import recv2
-class HitPacket():
+from .Packet import Packet
+class HitPacket(Packet):
     pID = 0x7
     def __init__(self, attackerID, targetID, dmg, isCrit, stunDur, hitPos,
         hitDir, isYellow, hitType, showLight ):

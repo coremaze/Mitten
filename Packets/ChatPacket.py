@@ -1,7 +1,8 @@
 import struct
 import io
 from net import recv2
-class ChatPacket():
+from .Packet import Packet
+class ChatPacket(Packet):
     pID = 0xA
     def __init__(self, message):
         self.message = message

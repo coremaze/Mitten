@@ -2,7 +2,8 @@ import struct
 import io
 from CubeTypes import Airship
 from net import recv2
-class AirTrafficPacket():
+from .Packet import Packet
+class AirTrafficPacket(Packet):
     pID = 0x3
     def __init__(self, airships):
         self.airships = airships

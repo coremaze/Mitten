@@ -1,7 +1,8 @@
 import struct
 import io
 from net import recv2
-class TimePacket():
+from .Packet import Packet
+class TimePacket(Packet):
     pID = 0x5
     def __init__(self, day, time):
         self.day  = day
