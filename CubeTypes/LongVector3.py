@@ -6,8 +6,8 @@ class LongVector3():
         self.y = y
         self.z = z
     @classmethod
-    def Import(data):
-        x, y, z = struct.unpack("<qqq")
+    def Import(self, data):
+        x, y, z = struct.unpack("<qqq", data.read(3*8))
         return LongVector3(x, y, z)
     def Export(self):
         return struct.pack("<qqq", self.x, self.y, self.z)

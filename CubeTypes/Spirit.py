@@ -3,7 +3,7 @@ import io
 
 class Spirit():
     size = 8
-    def __init__(x, y, z, material, level):
+    def __init__(self, x, y, z, material, level):
         self.x = x
         self.y = y
         self.z = z
@@ -11,12 +11,12 @@ class Spirit():
         self.level = level
 
     @classmethod
-    def Import(data):
+    def Import(self, data):
         x, = struct.unpack('<B', data.read(1))
         y, = struct.unpack('<B', data.read(1))
         z, = struct.unpack('<B', data.read(1))
         material, = struct.unpack('<B', data.read(1))
-        level, = struct.unpack('<h', data.read(1))
+        level, = struct.unpack('<h', data.read(2))
         data.read(2) #padding
         return Spirit(x, y, z, material, level)
 

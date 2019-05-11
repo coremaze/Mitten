@@ -49,7 +49,7 @@ class Appearance():
         self.wingOffset = wingOffset
 
     @classmethod
-    def Import(data):
+    def Import(self, data):
         notUsed1, = struct.unpack('<B', data.read(1))
         notUsed2, = struct.unpack('<B', data.read(1))
         hairRed, = struct.unpack('<B', data.read(1))
@@ -57,7 +57,7 @@ class Appearance():
         hairBlue, = struct.unpack('<B', data.read(1))
         notUsed3, = struct.unpack('<B', data.read(1))
         flags, = struct.unpack('<H', data.read(2))
-        scale = FloatVector3.Import(data.read(FloatVector3.size))
+        scale = FloatVector3.Import(data)
         headModel, = struct.unpack('<H', data.read(2))
         hairModel, = struct.unpack('<H', data.read(2))
         handModel, = struct.unpack('<H', data.read(2))
@@ -82,12 +82,12 @@ class Appearance():
         feetPitch, = struct.unpack('<f', data.read(4))
         wingPitch, = struct.unpack('<f', data.read(4))
         backPitch, = struct.unpack('<f', data.read(4))
-        bodyOffset = FloatVector3.Import(data.read(FloatVector3.size))
-        headOffset = FloatVector3.Import(data.read(FloatVector3.size))
-        handOffset = FloatVector3.Import(data.read(FloatVector3.size))
-        footOffset = FloatVector3.Import(data.read(FloatVector3.size))
-        tailOffset = FloatVector3.Import(data.read(FloatVector3.size))
-        wingOffset = FloatVector3.Import(data.read(FloatVector3.size))
+        bodyOffset = FloatVector3.Import(data)
+        headOffset = FloatVector3.Import(data)
+        handOffset = FloatVector3.Import(data)
+        footOffset = FloatVector3.Import(data)
+        tailOffset = FloatVector3.Import(data)
+        wingOffset = FloatVector3.Import(data)
         
         return Appearance(notUsed1, notUsed2, hairRed, hairGreen, hairBlue, notUsed3,
                           flags, scale, headModel, hairModel, handModel, footModel,

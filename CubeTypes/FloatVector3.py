@@ -6,8 +6,8 @@ class FloatVector3():
         self.y = y
         self.z = z
     @classmethod
-    def Import(data):
-        x, y, z = struct.unpack("<fff")
+    def Import(self, data):
+        x, y, z = struct.unpack("<fff", data.read(3*4))
         return FloatVector3(x, y, z)
     def Export(self):
         return struct.pack("<fff", self.x, self.y, self.z)

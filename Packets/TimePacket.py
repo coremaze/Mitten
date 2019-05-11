@@ -1,6 +1,5 @@
 import struct
 import io
-from net import recv2
 from .Packet import Packet
 class TimePacket(Packet):
     pID = 0x5

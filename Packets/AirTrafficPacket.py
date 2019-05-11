@@ -1,7 +1,6 @@
 import struct
 import io
 from CubeTypes import Airship
-from net import recv2
 from .Packet import Packet
 class AirTrafficPacket(Packet):
     pID = 0x3

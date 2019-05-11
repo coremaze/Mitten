@@ -1,6 +1,6 @@
 import struct
 import io
-from CubeTypes import Spirit
+from CubeTypes.Spirit import Spirit
 
 class Item():
     size = 280
@@ -18,7 +18,7 @@ class Item():
         self.numSpirits = numSpirits
 
     @classmethod
-    def Import(data):
+    def Import(self, data):
         itemType, = struct.unpack('<B', data.read(1))
         subType, = struct.unpack('<B', data.read(1))
         data.read(2) #padding
@@ -28,7 +28,7 @@ class Item():
         material, = struct.unpack('<B', data.read(1))
         adapted, = struct.unpack('<B', data.read(1))
         data.read(1) #padding
-        level, = struct.unpack('<h', data.read(1))
+        level, = struct.unpack('<h', data.read(2))
         data.read(2) #padding
         spirits = [Spirit.Import(data) for _ in range(32)]
         numSpirits, = struct.unpack('<I', data.read(4))

@@ -2,7 +2,6 @@ import struct
 import io
 from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
-from net import recv2
 from .Packet import Packet
 class HitPacket(Packet):
     pID = 0x7

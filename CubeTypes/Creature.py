@@ -1,10 +1,10 @@
 import struct
 import io
-from CubeTypes import LongVector3
-from CubeTypes import FloatVector3
-from CubeTypes import Appearance
-from CubeTypes import IntVector3
-from CubeTypes import Item
+from CubeTypes.LongVector3 import LongVector3
+from CubeTypes.FloatVector3 import FloatVector3
+from CubeTypes.Appearance import Appearance
+from CubeTypes.IntVector3 import IntVector3
+from CubeTypes.Item import Item
 class Creature():
     size = 0x1168
     def __init__(self, position, orientation, velocity, acceleration, retreat, headRotation, physicsFlags, hostility,
@@ -91,7 +91,7 @@ class Creature():
         self.manaCubes = manaCubes
 
     @classmethod
-    def Import(data):
+    def Import(self, data):
         position = LongVector3.Import(data)
         orientation = FloatVector3.Import(data)
         velocity = FloatVector3.Import(data)
@@ -137,7 +137,7 @@ class Creature():
         unkInt1, = struct.unpack('<i', data.read(4))
         unkInt2, = struct.unpack('<i', data.read(4))
         spawnPosition = LongVector3.Import(data)
-        unkIntVec3, = IntVector3.Import(data)
+        unkIntVec3 = IntVector3.Import(data)
         unkByte3, = struct.unpack('<B', data.read(1))
         consumable = Item.Import(data)
         equipment1 = Item.Import(data)
@@ -154,6 +154,18 @@ class Creature():
         equipment12 = Item.Import(data)
         equipment13 = Item.Import(data)
         name = data.read(16).decode('utf-16le')
+        skill1, = struct.unpack('<i', data.read(4))
+        skill2, = struct.unpack('<i', data.read(4))
+        skill3, = struct.unpack('<i', data.read(4))
+        skill4, = struct.unpack('<i', data.read(4))
+        skill5, = struct.unpack('<i', data.read(4))
+        skill6, = struct.unpack('<i', data.read(4))
+        skill7, = struct.unpack('<i', data.read(4))
+        skill8, = struct.unpack('<i', data.read(4))
+        skill9, = struct.unpack('<i', data.read(4))
+        skill10, = struct.unpack('<i', data.read(4))
+        skill11, = struct.unpack('<i', data.read(4))
+        manaCubes, = struct.unpack('<i', data.read(4))
         manaCubes, = struct.unpack('<i', data.read(4))
         return Creature(position, orientation, velocity, acceleration, retreat, headRotation, physicsFlags, hostility,
                  creatureType, mode, modeTimer, combo, lastHitTime, appearance, creatureFlags, rollTime, stunTime,
@@ -166,6 +178,6 @@ class Creature():
 
 
     def Export(self):
-        return packet
+        return b'\x00' * 0x1168 #todo
     
 
