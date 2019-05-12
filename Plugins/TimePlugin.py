@@ -16,7 +16,7 @@ def HandleTimePacket(connection, packet, fromClient):
     
     
 def HandleChatPacket(connection, packet, fromClient):
-    if fromClient: return
+    if not fromClient: return
     if packet.message.lower() == '!time unset':
         del custom_times[connection]
         newPacket = ChatPacket(f'Time has been unset. (But only for you!)', 0)
