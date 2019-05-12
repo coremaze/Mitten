@@ -42,48 +42,55 @@ class Connection():
     
     def HandleClient(self):
         while not self.closed:
-            #self.SendServer(self.RecvClient(4))
-            pID, = struct.unpack('<I', self.RecvClient(4))
+            try:
+                pID, = struct.unpack('<I', self.RecvClient(4))
 
-            #Find the class for this packet
-            for packet in PACKETS_CLASSES:
-                if packet.pID == pID:
-                    thisClass = packet
-                    break
-            else:
-                print(f'Invalid packet ID from Client: {pID}')
-                self.Close()
-            packet = thisClass.Recv(self, fromClient=True)
+                #Find the class for this packet
+                for packet in PACKETS_CLASSES:
+                    if packet.pID == pID:
+                        thisClass = packet
+                        break
+                else:
+                    print(f'Invalid packet ID from Client: {pID}')
+                    self.Close()
+                packet = thisClass.Recv(self, fromClient=True)
 
-            for plugin in Plugins.pluginList:
-                if plugin.HandlePacket(self, packet, fromClient=True):
-                    break
-            else:
-                #Export and send
-                packet.Send(self, toServer=True)
+                for plugin in Plugins.pluginList:
+                    if plugin.HandlePacket(self, packet, fromClient=True):
+                        break
+                else:
+                    #Export and send
+                    packet.Send(self, toServer=True)
+            except:
+                if not self.closed:
+                    raise
+                
             
             
     def HandleServer(self):
         while not self.closed:
-            #self.SendClient(self.RecvServer(4))
-            pID, = struct.unpack('<I', self.RecvServer(4))
-            
-            #Find the class for this packet
-            for packet in PACKETS_CLASSES:
-                if packet.pID == pID:
-                    thisClass = packet
-                    break
-            else:
-                print(f'Invalid packet ID from Client: {pID}')
-                self.Close()
-            packet = thisClass.Recv(self, fromClient=False)
+            try:
+                pID, = struct.unpack('<I', self.RecvServer(4))
+                
+                #Find the class for this packet
+                for packet in PACKETS_CLASSES:
+                    if packet.pID == pID:
+                        thisClass = packet
+                        break
+                else:
+                    print(f'Invalid packet ID from Client: {pID}')
+                    self.Close()
+                packet = thisClass.Recv(self, fromClient=False)
 
-            for plugin in Plugins.pluginList:
-                if plugin.HandlePacket(self, packet, fromClient=False):
-                    break
-            else:
-                #Export and send
-                packet.Send(self, toServer=False)
+                for plugin in Plugins.pluginList:
+                    if plugin.HandlePacket(self, packet, fromClient=False):
+                        break
+                else:
+                    #Export and send
+                    packet.Send(self, toServer=False)
+            except:
+                if not self.closed:
+                    raise
             
             
     def Close(self):
