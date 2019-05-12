@@ -1,46 +1,57 @@
 import struct
 import io
-from CubeTypes import LongVector3
-from CubeTypes import FloatVector3
+from CubeTypes.LongVector3 import LongVector3
+from CubeTypes.FloatVector3 import FloatVector3
 
 class Airship():
     size = 120
-    def __init__(self, ID, position, velocity, rotation, station, pathRotation, destination, flightState):
-        self.id = ID
-        self.position       = position
-        self.velocity       = velocity
-        self.rotation       = rotation
-        self.station        = station
-        self.pathRotation   = pathRotation
-        self.destination    = destination
-        self.flightState    = flightState
+    def __init__(self, ID, unkInt1, unkInt2, position, velocity, rotation, station, pathRotation, unkInt3,
+                 destination, flightState, unkInt4):
+        self.ID = ID
+        self.unkInt1 = unkInt1
+        self.unkInt2 = unkInt2
+        self.position = position
+        self.velocity = velocity
+        self.rotation = rotation
+        self.station = station
+        self.pathRotation = pathRotation
+        self.unkInt3 = unkInt3
+        self.destination = destination
+        self.flightState = flightState
+        self.unkInt4 = unkInt4
+        
 
     @classmethod
-    def Import(data):
-        ID,          = struct.unpack('<Q', data.read(8))
-        data.read(8)
-        pos          = LongVector3.Import(data.read(LongVector3.size))
-        vel          = FloatVector3.Import(data.read(FloatVector3.size))
-        rot,         = struct.unpack('<f', data.read(4))
-        station      = LongVector3.Import(data.read(LongVector3.size))
-        pathRot,     = struct.unpack('<f', data.read(4))
-        data.read(4)
-        dest         = LongVector3.Import(data.read(LongVector3.size))
+    def Import(self, data):
+        ID, = struct.unpack('<q', data.read(8))
+        unkInt1, = struct.unpack('<I', data.read(4))
+        unkInt2, = struct.unpack('<I', data.read(4))
+        position = LongVector3.Import(data)
+        velocity = FloatVector3.Import(data)
+        rotation, = struct.unpack('<f', data.read(4))
+        station = LongVector3.Import(data)
+        pathRotation, = struct.unpack('<f', data.read(4))
+        unkInt3, = struct.unpack('<I', data.read(4))
+        destination = LongVector3.Import(data)
         flightState, = struct.unpack('<I', data.read(4))
-        data.read(4)
-        return Airship(ID, pos, vel, rot, station, pathRot, dest, flightState)
+        unkInt4, = struct.unpack('<I', data.read(4))
+        
+        return Airship(ID, unkInt1, unkInt2, position, velocity, rotation, station, pathRotation, unkInt3,
+                 destination, flightState, unkInt4)
 
     def Export(self):
-        packet  = struct.pack('<Q', self.id)
-        packet += struct.pack('<Q', 0)
-        packet += self.position.Export()
-        packet += self.velocity.Export()
-        packet += struct.pack('<f', self.rotation)
-        packet += self.station.Export()
-        packet += struct.pack('<f', self.pathRotation)
-        packet += struct.pack('<I', 0)
-        packet += self.destination.Export()
-        packet += struct.pack('<I', self.flightState)
-        packet += struct.pack('<I', 0)
-        return packet
+        dataList = []
+        dataList.append(struct.pack('<q', self.ID))
+        dataList.append(struct.pack('<I', self.unkInt1))
+        dataList.append(struct.pack('<I', self.unkInt2))
+        dataList.append(self.position.Export())
+        dataList.append(self.velocity.Export())
+        dataList.append(struct.pack('<f', self.rotation))
+        dataList.append(self.station.Export())
+        dataList.append(struct.pack('<f', self.pathRotation))
+        dataList.append(struct.pack('<I', self.unkInt3))
+        dataList.append(self.destination.Export())
+        dataList.append(struct.pack('<I', self.flightState))
+        dataList.append(struct.pack('<I', self.unkInt4))
+        return b''.join(dataList)
     

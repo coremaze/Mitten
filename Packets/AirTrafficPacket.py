@@ -14,12 +14,12 @@ class AirTrafficPacket(Packet):
         airshipsCount, = struct.unpack('<I', recv(4))
         airships = []
         for _ in range(airshipsCount):
-            airships += Airship.Import(recv(Airship.size))
+            airships.append(Airship.Import(io.BytesIO(recv(Airship.size))))
         return AirTrafficPacket(airships)
 
     def Export(self, toServer):
         packetByteList = []
-        packetByteList.append( struct.pack('<I', pID) )
+        packetByteList.append( struct.pack('<I', AirTrafficPacket.pID) )
         packetByteList.append( struct.pack('<I', self.count) )
         for ship in self.airships:
             packetByteList.append( ship.Export() )
