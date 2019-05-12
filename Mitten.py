@@ -107,13 +107,18 @@ if __name__ == '__main__':
         #Accept connection from client
         listenSock.listen(1)
         clientSock, clientAddr = listenSock.accept()
+        print(f'Received a client connection from {clientAddr}.')
 
         #Make a connection to the server
         serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print(f'Attempting to connect to server.')
         serverSock.connect((INTERNAL_SERVER))
+        print(f'Connected to server.')
 
         connection = Connection(clientSock, serverSock)
 
         #Create threads for each of these connections
         Thread(target=Connection.HandleClient, args=[connection]).start()
+        print('Client handler started.')
         Thread(target=Connection.HandleServer, args=[connection]).start()
+        print('Server handler started.')
