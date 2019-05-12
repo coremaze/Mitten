@@ -57,6 +57,7 @@ class Connection():
 
                 for plugin in Plugins.pluginList:
                     if plugin.HandlePacket(self, packet, fromClient=True):
+                        print(f'[FROM CLIENT] Canceling a packet pID {pID}')
                         break
                 else:
                     #Export and send
@@ -84,6 +85,7 @@ class Connection():
 
                 for plugin in Plugins.pluginList:
                     if plugin.HandlePacket(self, packet, fromClient=False):
+                        print(f'[FROM SERVER] Canceling a packet pID {pID}')
                         break
                 else:
                     #Export and send
