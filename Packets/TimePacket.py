@@ -15,7 +15,7 @@ class TimePacket(Packet):
         return TimePacket(day, time)
 
     def Export(self, toServer):
-        packet  = struct.pack('<I', pID)
+        packet  = struct.pack('<I', TimePacket.pID)
         packet += struct.pack('<I', self.day)
         packet += struct.pack('<I', self.time)
         return packet
