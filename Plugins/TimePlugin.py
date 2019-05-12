@@ -37,7 +37,7 @@ def HandleChatPacket(connection, packet, fromClient):
     mseconds = hours * 3600000 + minutes * 60000
 
     newPacket = ChatPacket(f'Time has been set to {hours}:{minutes:02d}. (But only for you!)', 0)
-    newPacket.Send(connection, fromClient)
+    newPacket.Send(connection, toServer=False)
 
     custom_times[connection] = mseconds
 
