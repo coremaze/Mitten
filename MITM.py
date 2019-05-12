@@ -2,6 +2,7 @@ import Packets
 import socket
 from threading import Thread
 import struct
+import Plugins
 PACKETS_CLASSES = Packets.classes
 
 INTERNAL_SERVER = ('localhost', 12344)
@@ -54,10 +55,12 @@ class Connection():
                 self.Close()
             packet = thisClass.Recv(self, fromClient=True)
 
-            #Handle plugins................
-
-            #Export and send
-            packet.Send(self, toServer=True)
+            for plugin in Plugins.pluginList:
+                if plugin.HandlePacket(self, packet, fromClient=True):
+                    break
+            else:
+                #Export and send
+                packet.Send(self, toServer=True)
             
             
     def HandleServer(self):
@@ -75,10 +78,12 @@ class Connection():
                 self.Close()
             packet = thisClass.Recv(self, fromClient=False)
 
-            #Handle plugins................
-
-            #Export and send
-            packet.Send(self, toServer=False)
+            for plugin in Plugins.pluginList:
+                if plugin.HandlePacket(self, packet, fromClient=False):
+                    break
+            else:
+                #Export and send
+                packet.Send(self, toServer=False)
             
             
     def Close(self):
