@@ -27,8 +27,8 @@ class HitPacket(Packet):
         isCritical,  = struct.unpack('<I', recv(4))
         stunDur,     = struct.unpack('<I', recv(4))
         recv(4) # Padding
-        hitPos       = LongVector3.Import(recv(8*3))
-        hitDir       = FloatVector3.Import(recv(4*3))
+        hitPos       = LongVector3.Import(io.BytesIO(recv(8*3)))
+        hitDir       = FloatVector3.Import(io.BytesIO(recv(4*3)))
         isYellow,    = struct.unpack('<?', recv(1))
         hitType,     = struct.unpack('<B', recv(1))
         showLight,   = struct.unpack('<?', recv(1))
@@ -38,7 +38,7 @@ class HitPacket(Packet):
             hitDir, isYellow, hitType, showLight)
 
     def Export(self, toServer):
-        packet  = struct.pack('<I', pID)
+        packet  = struct.pack('<I', HitPacket.pID)
         packet += struct.pack('<Q', self.attackerID)
         packet += struct.pack('<Q', self.targetID)
         packet += struct.pack('<f', self.dmg)
