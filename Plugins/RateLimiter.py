@@ -17,7 +17,12 @@ def BanIP(IP):
             break
 
 def HandlePacket(connection, packet, fromClient):
-
+    if not fromClient:
+        return
+    
+    if connection not in action_packet_stacks:
+        action_packet_stacks[connection] = []
+        
     #Remove old records
     to_close = []
     for conn in action_packet_stacks:
@@ -35,7 +40,7 @@ def HandlePacket(connection, packet, fromClient):
 
 
 def HandleJoinPacket(connection, packet, fromClient):
-    action_packet_stacks[connection] = []
+    pass
     
 def HandleActionPacket(connection, packet, fromClient):
     curTime = time.time()
