@@ -94,11 +94,12 @@ class Connection():
             
             
     def Close(self):
+        print(f'Closing connection to {self.clientSock.getsockname()[0]}.')
         self.closed = True
-        try: self.serverSock.close()
-        except: pass
         try: self.clientSock.close()
-        except: pass
+        except Exception as e: print(e)
+        try: self.serverSock.close()
+        except Exception as e: print(e)
 
 if __name__ == '__main__':
     listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
