@@ -45,11 +45,11 @@ def HandleActionPacket(connection, packet, fromClient):
 
     #last 6 seconds
     recentActions = sum([1 for x in action_packet_stacks[connection] if (curTime - x) < 6])
-    print(f'{recentActions} recent actions')
+    #print(f'{recentActions} recent actions')
 
     #last 60 seconds
     lessRecentActions = sum([1 for x in action_packet_stacks[connection] if (curTime - x) < 60])
-    print(f'{lessRecentActions} less recent actions')
+    #print(f'{lessRecentActions} less recent actions')
 
     
     if recentActions >= 100 or lessRecentActions >= 420:
