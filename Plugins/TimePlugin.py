@@ -20,7 +20,7 @@ def HandleChatPacket(connection, packet, fromClient):
     if packet.message.lower() == '!time unset':
         del custom_times[connection]
         newPacket = ChatPacket(f'Time has been unset. (But only for you!)', 0)
-        newPacket.Send(connection, fromClient)
+        newPacket.Send(connection, toServer=False)
         return True
     
     args = packet.message.lower().split(' ')
