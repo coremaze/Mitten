@@ -4,13 +4,14 @@ from .Packet import Packet
 from CubeTypes.Item import Item
 class ActionPacket(Packet):
     pID = 0x6
-    def __init__(self, item, zoneX, zoneY, index, unknownInt, interactionType, unkShort):
+    def __init__(self, item, zoneX, zoneY, index, unknownInt, interactionType, unkByte, unkShort):
         self.item = item
         self.zoneX = zoneX
         self.zoneY = zoneY
         self.index = index
         self.unknownInt = unknownInt
         self.interactionType = interactionType
+        self.unkByte = unkByte
         self.unkShort = unkShort
 
     @staticmethod
@@ -22,10 +23,11 @@ class ActionPacket(Packet):
         zoneY, = struct.unpack('<i', recv(4))
         index, = struct.unpack('<i', recv(4))
         unknownInt, = struct.unpack('<i', recv(4))
-        interactionType, = struct.unpack('<H', recv(2))
+        interactionType, = struct.unpack('<B', recv(1))
+        unkByte, = struct.unpack('<B', recv(1))
         unkShort, = struct.unpack('<H', recv(2))
 
-        return ActionPacket(item, zoneX, zoneY, index, unknownInt, interactionType, unkShort)
+        return ActionPacket(item, zoneX, zoneY, index, unknownInt, interactionType, unkByte, unkShort)
 
     def Export(self, toServer):
         packetByteList = []
@@ -35,7 +37,8 @@ class ActionPacket(Packet):
         packetByteList.append( struct.pack('<i', self.zoneY) )
         packetByteList.append( struct.pack('<i', self.index) )
         packetByteList.append( struct.pack('<i', self.unknownInt) )
-        packetByteList.append( struct.pack('<H', self.interactionType) )
+        packetByteList.append( struct.pack('<B', self.interactionType) )
+        packetByteList.append( struct.pack('<B', self.unkByte) )
         packetByteList.append( struct.pack('<H', self.unkShort) )
         return b''.join(packetByteList)
 
