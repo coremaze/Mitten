@@ -101,7 +101,7 @@ class Connection():
             
             
     def Close(self):
-        print(f'Closing connection to {self.clientSock.getsockname()[0]}.')
+        print(f'Closing connection to {self.ClientIP()}.')
         self.closed = True
         try: self.clientSock.close()
         except Exception as e: print(e)
