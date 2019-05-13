@@ -21,8 +21,8 @@ class Airship():
         self.unkInt4 = unkInt4
         
 
-    @classmethod
-    def Import(self, data):
+    @staticmethod
+    def Import(data):
         ID, = struct.unpack('<q', data.read(8))
         unkInt1, = struct.unpack('<I', data.read(4))
         unkInt2, = struct.unpack('<I', data.read(4))

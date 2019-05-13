@@ -112,8 +112,8 @@ class Creature():
         self.manaCubes = manaCubes
         self.name = name
 
-    @classmethod
-    def Import(self, data):      
+    @staticmethod
+    def Import(data):     
         position = LongVector3.Import(data)
         orientation = FloatVector3.Import(data)
         velocity = FloatVector3.Import(data)

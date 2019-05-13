@@ -20,8 +20,8 @@ class Item():
         self.spirits = spirits
         self.numSpirits = numSpirits
 
-    @classmethod
-    def Import(self, data):
+    @staticmethod
+    def Import(data):
         itemType, = struct.unpack('<B', data.read(1))
         subType, = struct.unpack('<B', data.read(1))
         unkShort1, = struct.unpack('<h', data.read(2))

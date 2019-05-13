@@ -11,8 +11,8 @@ class Spirit():
         self.level = level
         self.unkShort = unkShort
 
-    @classmethod
-    def Import(self, data):
+    @staticmethod
+    def Import(data):
         x, = struct.unpack('<B', data.read(1))
         y, = struct.unpack('<B', data.read(1))
         z, = struct.unpack('<B', data.read(1))

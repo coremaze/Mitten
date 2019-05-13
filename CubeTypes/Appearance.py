@@ -48,8 +48,8 @@ class Appearance():
         self.tailOffset = tailOffset
         self.wingOffset = wingOffset
 
-    @classmethod
-    def Import(self, data):
+    @staticmethod
+    def Import(data):
         notUsed1, = struct.unpack('<B', data.read(1))
         notUsed2, = struct.unpack('<B', data.read(1))
         hairRed, = struct.unpack('<B', data.read(1))

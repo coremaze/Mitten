@@ -5,8 +5,8 @@ class IntVector3():
         self.x = x
         self.y = y
         self.z = z
-    @classmethod
-    def Import(self, data):
+    @staticmethod
+    def Import(data):
         x, y, z = struct.unpack("<iii", data.read(3*4))
         return IntVector3(x, y, z)
     def Export(self):
