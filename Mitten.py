@@ -106,6 +106,7 @@ class Connection():
 if __name__ == '__main__':
     listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listenSock.bind((EXTERNAL_SERVER))
+    connections = []
     while True:
         #Accept connection from client
         listenSock.listen(1)
@@ -119,6 +120,7 @@ if __name__ == '__main__':
         print(f'Connected to server.')
 
         connection = Connection(clientSock, serverSock)
+        connections.append(connection)
 
         #Create threads for each of these connections
         Thread(target=Connection.HandleClient, args=[connection]).start()
