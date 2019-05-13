@@ -302,7 +302,6 @@ class Creature():
         dataList.append(self.equipment11.Export())
         dataList.append(self.equipment12.Export())
         dataList.append(self.equipment13.Export())
-        dataList.append(bytes([ord(x)&0xFF for x in self.name]) + b'\x00'*(16-len(self.name)))
         dataList.append(struct.pack('<i', self.skill1))
         dataList.append(struct.pack('<i', self.skill2))
         dataList.append(struct.pack('<i', self.skill3))
@@ -315,6 +314,7 @@ class Creature():
         dataList.append(struct.pack('<i', self.skill10))
         dataList.append(struct.pack('<i', self.skill11))
         dataList.append(struct.pack('<i', self.manaCubes))
+        dataList.append(bytes([ord(x)&0xFF for x in self.name]) + b'\x00'*(16-len(self.name)))
         return b''.join(dataList)
     
 
