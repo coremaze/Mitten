@@ -15,7 +15,7 @@ def HandlePacket(connection, packet, fromClient):
         else:
             break
 
-    IP = connection.clientSock.getsockname()[0]
+    IP = connection.ClientIP()
     if IP in IPs:
         print(f'{IP} tried to connect, but they are banned.')
         packet.Send(connection, fromClient)
