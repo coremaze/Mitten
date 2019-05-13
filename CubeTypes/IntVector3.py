@@ -1,10 +1,7 @@
 import struct
-class IntVector3():
+from CubeTypes.Vector3 import Vector3
+class IntVector3(Vector3):
     size = 12
-    def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
     @staticmethod
     def Import(data):
         x, y, z = struct.unpack("<iii", data.read(3*4))
