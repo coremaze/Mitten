@@ -9,9 +9,11 @@ INTERNAL_SERVER = ('localhost', 12344)
 EXTERNAL_SERVER = ('', 12345)
 
 class Connection():
-    def __init__(self, clientSock, serverSock):
+    def __init__(self, clientSock, serverSock, address, port):
         self.clientSock = clientSock
         self.serverSock = serverSock
+        self.clientAddress = address
+        self.clientPort = port
         self.closed = False
         
     def SendServer(self, data):
@@ -39,6 +41,9 @@ class Connection():
         except:
             self.Close()
         return buf
+
+    def ClientIP(self):
+        return self.clientAddress
     
     def HandleClient(self):
         while not self.closed:
@@ -106,7 +111,6 @@ class Connection():
 if __name__ == '__main__':
     listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listenSock.bind((EXTERNAL_SERVER))
-    connections = []
     while True:
         #Accept connection from client
         listenSock.listen(1)
@@ -119,8 +123,8 @@ if __name__ == '__main__':
         serverSock.connect((INTERNAL_SERVER))
         print(f'Connected to server.')
 
-        connection = Connection(clientSock, serverSock)
-        connections.append(connection)
+        address, port = clientAddr
+        connection = Connection(clientSock, serverSock, address, port)
 
         #Create threads for each of these connections
         Thread(target=Connection.HandleClient, args=[connection]).start()
