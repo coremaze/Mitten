@@ -3,6 +3,7 @@ import socket
 from threading import Thread
 import struct
 import Plugins
+import time
 PACKETS_CLASSES = Packets.classes
 
 INTERNAL_SERVER = ('localhost', 12344)
@@ -33,12 +34,18 @@ class Connection():
         except:
             self.Close()
         return buf
+
+    def RecvClientWatcher(self, timeout=1.0):
+        initialTime = time.time()
+        time.sleep(timeout)
+        if not self.joined:
+            self.Close()
     
     def RecvClient(self, size):
         buf = b''
         if not self.joined:
             self.clientSock.settimeout(1.0)
-            self.clientSock.ioctl(socket.SIO_KEEPALIVE_VALS, (1, 500, 10000))
+            Thread(target=self.RecvClientWatcher).start()
         else:
             self.clientSock.settimeout(None)
         try:
