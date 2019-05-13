@@ -3,6 +3,7 @@ import io
 from CubeTypes import FloatVector3
 
 class Appearance():
+    size = 172
     def __init__(self, notUsed1, notUsed2, hairRed, hairGreen, hairBlue, notUsed3, flags, scale,
                  headModel, hairModel, handModel, footModel, bodyModel, tailModel,
                  shoulder2Model, wingModel, headScale, bodyScale, handScale, footScale,

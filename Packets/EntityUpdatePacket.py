@@ -1,26 +1,26 @@
 import struct
 import io
 from .Packet import Packet
-import zlib
+from CubeTypes import CreatureDelta
 class EntityUpdatePacket(Packet):
     pID = 0x0
-    def __init__(self, zlibData):
-        self.zlibData = zlibData #let's actually parse this eventually
+    def __init__(self, creatureDelta):
+        self.creatureDelta = creatureDelta
 
     @staticmethod
     def Recv(connection, fromClient):
         recv = [connection.RecvServer, connection.RecvClient][fromClient]
         
         size, = struct.unpack('<I', recv(4))
-        zlibData = recv(size)
-            
-        return EntityUpdatePacket(zlibData)
+        creatureDelta = CreatureDelta.Import(recv(size))
+        return EntityUpdatePacket(creatureDelta)
 
     def Export(self, toServer):
         packetByteList = []
         packetByteList.append( struct.pack('<I', EntityUpdatePacket.pID) )
-        packetByteList.append( struct.pack('<I', len(self.zlibData)) )
-        packetByteList.append( self.zlibData )
+        zlibData = self.creatureDelta.Export()
+        packetByteList.append( struct.pack('<I', len(zlibData)) )
+        packetByteList.append( zlibData )
         return b''.join(packetByteList)
 
     def Send(self, connection, toServer):
