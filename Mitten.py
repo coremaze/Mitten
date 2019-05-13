@@ -38,6 +38,7 @@ class Connection():
         buf = b''
         if not self.joined:
             self.clientSock.settimeout(1.0)
+            self.clientSock.ioctl(socket.SIO_KEEPALIVE_VALS, (1, 500, 10000))
         else:
             self.clientSock.settimeout(None)
         try:
