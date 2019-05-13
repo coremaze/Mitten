@@ -5,19 +5,18 @@ from CubeTypes.FloatVector3 import FloatVector3
 from CubeTypes.Appearance import Appearance
 from CubeTypes.IntVector3 import IntVector3
 from CubeTypes.Item import Item
+from CubeTypes.Equipment import Equipment
+from CubeTypes.StatMultipliers import StatMultipliers
 class Creature():
     size = 0x1168
     def __init__(self, position, orientation, velocity, acceleration, retreat, headRotation, physicsFlags, hostility,
                  unusedByte1, unusedByte2, unusedByte3, creatureType, mode, unusedByte4, unusedByte5, unusedByte6,
                  modeTimer, combo, lastHitTime, appearance, creatureFlags, unusedByte7, unusedByte8, rollTime, stunTime,
                  slowedTime, iceEffectTime, windEffectTime, showPatchTime, classType, specialization, unusedByte9,
-                 unusedByte10, chargedMP, unkIntVec1, unkIntVec2, rayHit, HP, MP, blockPower, HPMultiplier, attackSpeedMultiplier,
-                 damageMultiplier, armorMultiplier, resistanceMultiplier, unkByte1, unkByte2, unusedByte11, unusedByte12,
-                 level, XP, parentOwner, unkLong1, powerBase, unusedByte13, unusedByte14, unusedByte15, unkInt1, superWeird,
-                 unkInt2, spawnPosition, unkIntVec3, unkByte3, unusedByte16, unusedByte17, unusedByte18, consumable, equipment1,
-                 equipment2, equipment3, equipment4, equipment5, equipment6, equipment7, equipment8, equipment9, equipment10,
-                 equipment11, equipment12, equipment13, skill1, skill2, skill3, skill4, skill5, skill6, skill7, skill8, skill9,
-                 skill10, skill11, manaCubes, name):
+                 unusedByte10, chargedMP, unkIntVec1, unkIntVec2, rayHit, HP, MP, blockPower, statMultipliers, unkByte1,
+                 unkByte2, unusedByte11, unusedByte12, level, XP, parentOwner, unkLong1, powerBase, unusedByte13,
+                 unusedByte14, unusedByte15, unkInt1, superWeird, unkInt2, spawnPosition, unkIntVec3, unkByte3, 
+                 unusedByte16, unusedByte17, unusedByte18, consumable, equipment, skills, manaCubes, name):
         self.position = position
         self.orientation = orientation
         self.velocity = velocity
@@ -58,11 +57,7 @@ class Creature():
         self.HP = HP
         self.MP = MP
         self.blockPower = blockPower
-        self.HPMultiplier = HPMultiplier
-        self.attackSpeedMultiplier = attackSpeedMultiplier
-        self.damageMultiplier = damageMultiplier
-        self.armorMultiplier = armorMultiplier
-        self.resistanceMultiplier = resistanceMultiplier
+        self.statMultipliers = statMultipliers
         self.unkByte1 = unkByte1
         self.unkByte2 = unkByte2
         self.unusedByte11 = unusedByte11
@@ -85,30 +80,8 @@ class Creature():
         self.unusedByte17 = unusedByte17
         self.unusedByte18 = unusedByte18
         self.consumable = consumable
-        self.equipment1 = equipment1
-        self.equipment2 = equipment2
-        self.equipment3 = equipment3
-        self.equipment4 = equipment4
-        self.equipment5 = equipment5
-        self.equipment6 = equipment6
-        self.equipment7 = equipment7
-        self.equipment8 = equipment8
-        self.equipment9 = equipment9
-        self.equipment10 = equipment10
-        self.equipment11 = equipment11
-        self.equipment12 = equipment12
-        self.equipment13 = equipment13
-        self.skill1 = skill1
-        self.skill2 = skill2
-        self.skill3 = skill3
-        self.skill4 = skill4
-        self.skill5 = skill5
-        self.skill6 = skill6
-        self.skill7 = skill7
-        self.skill8 = skill8
-        self.skill9 = skill9
-        self.skill10 = skill10
-        self.skill11 = skill11
+        self.equipment = equipment
+        self.skills = skills
         self.manaCubes = manaCubes
         self.name = name
 
@@ -154,11 +127,7 @@ class Creature():
         HP, = struct.unpack('<f', data.read(4))
         MP, = struct.unpack('<f', data.read(4))
         blockPower, = struct.unpack('<f', data.read(4))
-        HPMultiplier, = struct.unpack('<f', data.read(4))
-        attackSpeedMultiplier, = struct.unpack('<f', data.read(4))
-        damageMultiplier, = struct.unpack('<f', data.read(4))
-        armorMultiplier, = struct.unpack('<f', data.read(4))
-        resistanceMultiplier, = struct.unpack('<f', data.read(4))
+        statMultipliers = StatMultipliers.Import(data)
         unkByte1, = struct.unpack('<B', data.read(1))
         unkByte2, = struct.unpack('<B', data.read(1))
         unusedByte11, = struct.unpack('<B', data.read(1))
@@ -181,44 +150,18 @@ class Creature():
         unusedByte17, = struct.unpack('<B', data.read(1))
         unusedByte18, = struct.unpack('<B', data.read(1))
         consumable = Item.Import(data)
-        equipment1 = Item.Import(data)
-        equipment2 = Item.Import(data)
-        equipment3 = Item.Import(data)
-        equipment4 = Item.Import(data)
-        equipment5 = Item.Import(data)
-        equipment6 = Item.Import(data)
-        equipment7 = Item.Import(data)
-        equipment8 = Item.Import(data)
-        equipment9 = Item.Import(data)
-        equipment10 = Item.Import(data)
-        equipment11 = Item.Import(data)
-        equipment12 = Item.Import(data)
-        equipment13 = Item.Import(data)
-        skill1, = struct.unpack('<i', data.read(4))
-        skill2, = struct.unpack('<i', data.read(4))
-        skill3, = struct.unpack('<i', data.read(4))
-        skill4, = struct.unpack('<i', data.read(4))
-        skill5, = struct.unpack('<i', data.read(4))
-        skill6, = struct.unpack('<i', data.read(4))
-        skill7, = struct.unpack('<i', data.read(4))
-        skill8, = struct.unpack('<i', data.read(4))
-        skill9, = struct.unpack('<i', data.read(4))
-        skill10, = struct.unpack('<i', data.read(4))
-        skill11, = struct.unpack('<i', data.read(4))
+        equipment = Equipment.Import(data)
+        skills = struct.unpack('<iiiiiiiiiii', data.read(4*11))
         manaCubes, = struct.unpack('<i', data.read(4))
         name = ''.join([chr(x) for x in data.read(16).rstrip(b'\x00')]) #this method might be slightly more resilient than a decoder
         return Creature(position, orientation, velocity, acceleration, retreat, headRotation, physicsFlags, hostility,
                  unusedByte1, unusedByte2, unusedByte3, creatureType, mode, unusedByte4, unusedByte5, unusedByte6,
                  modeTimer, combo, lastHitTime, appearance, creatureFlags, unusedByte7, unusedByte8, rollTime, stunTime,
                  slowedTime, iceEffectTime, windEffectTime, showPatchTime, classType, specialization, unusedByte9,
-                 unusedByte10, chargedMP, unkIntVec1, unkIntVec2, rayHit, HP, MP, blockPower, HPMultiplier, attackSpeedMultiplier,
-                 damageMultiplier, armorMultiplier, resistanceMultiplier, unkByte1, unkByte2, unusedByte11, unusedByte12,
-                 level, XP, parentOwner, unkLong1, powerBase, unusedByte13, unusedByte14, unusedByte15, unkInt1, superWeird,
-                 unkInt2, spawnPosition, unkIntVec3, unkByte3, unusedByte16, unusedByte17, unusedByte18, consumable, equipment1,
-                 equipment2, equipment3, equipment4, equipment5, equipment6, equipment7, equipment8, equipment9, equipment10,
-                 equipment11, equipment12, equipment13, skill1, skill2, skill3, skill4, skill5, skill6, skill7, skill8, skill9,
-                 skill10, skill11, manaCubes, name)
-
+                 unusedByte10, chargedMP, unkIntVec1, unkIntVec2, rayHit, HP, MP, blockPower, statMultipliers, unkByte1,
+                 unkByte2, unusedByte11, unusedByte12, level, XP, parentOwner, unkLong1, powerBase, unusedByte13,
+                 unusedByte14, unusedByte15, unkInt1, superWeird, unkInt2, spawnPosition, unkIntVec3, unkByte3,
+                 unusedByte16, unusedByte17, unusedByte18, consumable, equipment, skills, manaCubes, name)
 
     def Export(self):
         dataList = []
@@ -262,11 +205,7 @@ class Creature():
         dataList.append(struct.pack('<f', self.HP))
         dataList.append(struct.pack('<f', self.MP))
         dataList.append(struct.pack('<f', self.blockPower))
-        dataList.append(struct.pack('<f', self.HPMultiplier))
-        dataList.append(struct.pack('<f', self.attackSpeedMultiplier))
-        dataList.append(struct.pack('<f', self.damageMultiplier))
-        dataList.append(struct.pack('<f', self.armorMultiplier))
-        dataList.append(struct.pack('<f', self.resistanceMultiplier))
+        dataList.append(self.statMultipliers.Export())
         dataList.append(struct.pack('<B', self.unkByte1))
         dataList.append(struct.pack('<B', self.unkByte2))
         dataList.append(struct.pack('<B', self.unusedByte11))
@@ -289,30 +228,8 @@ class Creature():
         dataList.append(struct.pack('<B', self.unusedByte17))
         dataList.append(struct.pack('<B', self.unusedByte18))
         dataList.append(self.consumable.Export())
-        dataList.append(self.equipment1.Export())
-        dataList.append(self.equipment2.Export())
-        dataList.append(self.equipment3.Export())
-        dataList.append(self.equipment4.Export())
-        dataList.append(self.equipment5.Export())
-        dataList.append(self.equipment6.Export())
-        dataList.append(self.equipment7.Export())
-        dataList.append(self.equipment8.Export())
-        dataList.append(self.equipment9.Export())
-        dataList.append(self.equipment10.Export())
-        dataList.append(self.equipment11.Export())
-        dataList.append(self.equipment12.Export())
-        dataList.append(self.equipment13.Export())
-        dataList.append(struct.pack('<i', self.skill1))
-        dataList.append(struct.pack('<i', self.skill2))
-        dataList.append(struct.pack('<i', self.skill3))
-        dataList.append(struct.pack('<i', self.skill4))
-        dataList.append(struct.pack('<i', self.skill5))
-        dataList.append(struct.pack('<i', self.skill6))
-        dataList.append(struct.pack('<i', self.skill7))
-        dataList.append(struct.pack('<i', self.skill8))
-        dataList.append(struct.pack('<i', self.skill9))
-        dataList.append(struct.pack('<i', self.skill10))
-        dataList.append(struct.pack('<i', self.skill11))
+        dataList.append(self.equipment.Export())
+        dataList.append(struct.pack('<iiiiiiiiiii', *self.skills))
         dataList.append(struct.pack('<i', self.manaCubes))
         dataList.append(bytes([ord(x)&0xFF for x in self.name]) + b'\x00'*(16-len(self.name)))
         return b''.join(dataList)
