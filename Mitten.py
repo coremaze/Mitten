@@ -17,11 +17,11 @@ class Connection():
         self.closed = False
         
     def SendServer(self, data):
-        try: self.serverSock.send(data)
+        try: self.serverSock.sendall(data)
         except: self.Close()
         
     def SendClient(self, data):
-        try: self.clientSock.send(data)
+        try: self.clientSock.sendall(data)
         except: self.Close()
         
     def RecvServer(self, size):
