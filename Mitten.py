@@ -15,6 +15,7 @@ class Connection():
         self.clientAddress = address
         self.clientPort = port
         self.closed = False
+        self.joined = False
         
     def SendServer(self, data):
         try: self.serverSock.sendall(data)
@@ -35,6 +36,10 @@ class Connection():
     
     def RecvClient(self, size):
         buf = b''
+        if not self.joined:
+            self.clientSock.settimeout(1.0)
+        else:
+            self.clientSock.settimeout(None)
         try:
             while len(buf) < size:
                 buf += self.clientSock.recv(size - len(buf))
@@ -59,6 +64,7 @@ class Connection():
                     print(f'Invalid packet ID from Client: {pID}')
                     self.Close()
                 packet = thisClass.Recv(self, fromClient=True)
+                self.joined = True
 
                 for plugin in Plugins.pluginList:
                     if plugin.HandlePacket(self, packet, fromClient=True):
