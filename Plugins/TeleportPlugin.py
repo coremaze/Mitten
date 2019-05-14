@@ -16,7 +16,7 @@ players = {} # keyed by connection
 
 def HandlePacket(connection, packet, fromClient):
     #this catastophe can have dicts being modified from other threads while in use
-    while True:
+    for retry in range(3):
         try:
             #Make sure to keep the GUID 0 creature alive for the teleporting clients at all times
             if fromClient:
