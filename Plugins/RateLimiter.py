@@ -8,7 +8,7 @@ action_packet_stacks = {}
 def BanIP(IP):
     while True:
         try:
-            with open('bans.txt', 'w+') as f:
+            with open('bans.txt', 'a+') as f:
                 f.write(f'\n{IP}\n')
         except FileNotFoundError:
             with open('bans.txt', 'w') as f:
