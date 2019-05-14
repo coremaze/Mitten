@@ -8,4 +8,3 @@ from .Item import Item
 from .Spirit import Spirit
 from .Equipment import Equipment
 from .StatMultipliers import StatMultipliers
-from .CreatureDelta import CreatureDelta
