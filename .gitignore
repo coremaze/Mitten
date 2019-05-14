@@ -1,1 +1,5 @@
+.vscode/settings.json
+.gitignore
 *.pyc
+bans.txt
+.vscode/launch.json
