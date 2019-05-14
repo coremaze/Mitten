@@ -12,6 +12,12 @@ def HandlePacket(connection, packet, fromClient):
     elif aBannedConnections.get(connection, False) is True:
         return
 
+    IP = connection.ClientIP()
+    if IsBanned(IP):
+        aBannedConnections[connection] = True
+        print(f'{IP} Is banned and thinks we care about his packets')
+        return
+
 def IsBanned(IP):
     while True:
         try:
@@ -24,12 +30,3 @@ def IsBanned(IP):
             break
 
     return IP in IPs
-
-def HandlePacket(connection, packet, fromClient):
-    IP = connection.ClientIP()
-    if IsBanned(IP):
-        aBannedConnections[connection] = True
-        print(f'{IP} Is banned and thinks we care about his packets')
-        return
-
-    
