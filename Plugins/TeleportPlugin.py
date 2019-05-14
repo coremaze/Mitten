@@ -150,7 +150,7 @@ def HandleChatPacket(connection, packet, fromClient):
             x = int(position.x / DOTS_IN_BLOCK / BLOCKS_IN_ZONE)
             y = int(position.y / DOTS_IN_BLOCK / BLOCKS_IN_ZONE)
             z = int(position.z / DOTS_IN_BLOCK / BLOCKS_IN_ZONE)
-            ChatPacket(f'[Mitten] Chunk pos X:{x} Y:{y} Z:{z}', 0).Send(connection, toServer=False)
+            ChatPacket(f'[Mitten] Zone pos X:{x} Y:{y} Z:{z}', 0).Send(connection, toServer=False)
             return True
 
         elif split[0] == '!listplayers':
