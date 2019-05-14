@@ -12,6 +12,7 @@ from Packets.ActionPacket import ActionPacket
 from Packets.HitPacket import HitPacket
 from Packets.JoinPacket import JoinPacket
 
+
 from CubeTypes import *
 import json
 
@@ -265,6 +266,13 @@ ITEM_NAMES = {
     (25, 0): 'ManaCube'
 }
 
+def canDict(obj):
+    try:
+        somth = obj.__dict__
+        return str(somth)
+    except:
+        return str(obj)
+
 # Function Definitions & Implementations
 def BanIP(IP):
     while True:
@@ -285,6 +293,8 @@ def HandleJoinPacket(connection, packet, fromClient):
     return
 
 def HandleActionPacket(connection, packet, fromClient):
+    sPrefix = ["[FROM SERVER]", "[FROM CLIENT]"][fromClient]
+    print(f'{sPrefix} {json.dumps( {type(packet).__name__: packet.__dict__}, default=canDict  )}')
     if packet.interactionType is not 6: return
     if ITEM_NAMES.get((packet.item.itemType, packet.item.subType)) is not 'Bait': return
     BanIP(connection.ClientIP())
@@ -299,19 +309,14 @@ def HandleGenericPacket(connection, packet, fromClient):
     sPrefix = ["[FROM SERVER]", "[FROM CLIENT]"][fromClient]
     print(f'{sPrefix} {json.dumps( {type(packet).__name__: packet.__dict__}, default=canDict  )}')
 
-def canDict(obj):
-    try:
-        somth = obj.__dict__
-        return str(somth)
-    except:
-        return str(obj)
+
                                                     
 # Packet event - called every time a packet is received.                                                   
 def HandlePacket(connection, packet, fromClient):
     return aHandlers.get(type(packet).pID, HandleGenericPacket)(connection, packet, fromClient)
     
 # Variable Implementations
-aHandlers[JoinPacket.pID] = HandleJoinPacket
+#aHandlers[JoinPacket.pID] = HandleJoinPacket
 aHandlers[ActionPacket.pID] = HandleActionPacket
     
 

@@ -7,16 +7,18 @@ aBannedConnections = {}
 
 def HandlePacket(connection, packet, fromClient):
     global aBannedConnections
-    if type(packet) != JoinPacket and aBannedConnections.get(connection, False) is True and fromClient is True:
+    if type(packet) == JoinPacket:
+        IP = connection.ClientIP()
+        if IsBanned(IP):
+            aBannedConnections[connection] = True
+            print(f'{IP} Is banned and thinks we care about his packets')
+            return
+    if aBannedConnections.get(connection, False) is True and fromClient is True:
         return True
     elif aBannedConnections.get(connection, False) is True:
         return
 
-    IP = connection.ClientIP()
-    if IsBanned(IP):
-        aBannedConnections[connection] = True
-        print(f'{IP} Is banned and thinks we care about his packets')
-        return
+
 
 def IsBanned(IP):
     while True:
