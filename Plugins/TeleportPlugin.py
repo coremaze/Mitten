@@ -90,11 +90,10 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
 
         # Save a local copy of the entites via their delta updates.
         # TODO(Andoryuuta): Find out when to delete these.
-        fieldsCopy = deepcopy(packet.creatureDelta.fields)
         if entity_id in latestEntities:
-            latestEntities[entity_id].update(fieldsCopy)
+            latestEntities[entity_id].update(packet.creatureDelta.fields)
         else:
-            latestEntities[entity_id] = fieldsCopy
+            latestEntities[entity_id] = packet.creatureDelta.fields
 
 
 def teleport(connection, x, y, z):
@@ -154,7 +153,7 @@ def HandleChatPacket(connection, packet, fromClient):
             return True
 
         elif split[0] == '!listplayers':
-            playerNames = [DecodeString(players[x]['fields']['name']) for x in players if 'name' in players[x]['fields']]
+            playerNames = [players[x]['fields']['name'] for x in players if 'name' in players[x]['fields']]
                     
             chatStr = '[Mitten] Players: ' + ', '.join(playerNames)
             ChatPacket(chatStr, 0).Send(connection, toServer=False)
@@ -164,7 +163,7 @@ def HandleChatPacket(connection, packet, fromClient):
             cmd, playerName = split
 
             # Go over each entity we have and check if the name matches
-            matchingPlayers = [players[x] for x in players if DecodeString(players[x]['fields']['name']).lower() == playerName.lower()]
+            matchingPlayers = [players[x] for x in players if players[x]['fields']['name'].lower() == playerName.lower()]
             
             if not len(matchingPlayers):
                 ChatPacket(f'[Mitten] Found no match for {playerName}.', 0).Send(connection, toServer=False)
