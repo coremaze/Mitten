@@ -27,7 +27,7 @@ class BuildingModZoneLoadPacket(BuildingModPacket):
     def __init__(self, zoneX, zoneY):
         self.zoneX = zoneX
         self.zoneY = zoneY
-        print(f'Loaded {zoneX}, {zoneY}')
+        #print(f'Loaded {zoneX}, {zoneY}')
 
     @staticmethod
     def Recv(connection, fromClient):
@@ -49,7 +49,7 @@ class BuildingModZoneUnloadPacket(BuildingModPacket):
     def __init__(self, zoneX, zoneY):
         self.zoneX = zoneX
         self.zoneY = zoneY
-        print(f'Unoaded {zoneX}, {zoneY}')
+        #print(f'Unoaded {zoneX}, {zoneY}')
 
     @staticmethod
     def Recv(connection, fromClient):

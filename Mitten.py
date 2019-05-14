@@ -76,7 +76,7 @@ class Connection():
 
                 for plugin in Plugins.pluginList:
                     if plugin.HandlePacket(self, packet, fromClient=True):
-                        print(f'[FROM CLIENT] Canceling a packet pID {pID}')
+                        #print(f'[FROM CLIENT] Canceling a packet pID {pID}')
                         break
                 else:
                     #Export and send
@@ -104,7 +104,7 @@ class Connection():
 
                 for plugin in Plugins.pluginList:
                     if plugin.HandlePacket(self, packet, fromClient=False):
-                        print(f'[FROM SERVER] Canceling a packet pID {pID}')
+                        #print(f'[FROM SERVER] Canceling a packet pID {pID}')
                         break
                 else:
                     #Export and send
@@ -133,15 +133,15 @@ if __name__ == '__main__':
 
         #Make a connection to the server
         serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print(f'Attempting to connect to server.')
+        #print(f'Attempting to connect to server.')
         serverSock.connect((INTERNAL_SERVER))
-        print(f'Connected to server.')
+        #print(f'Connected to server.')
 
         address, port = clientAddr
         connection = Connection(clientSock, serverSock, address, port)
 
         #Create threads for each of these connections
         Thread(target=Connection.HandleClient, args=[connection]).start()
-        print('Client handler started.')
+        #print('Client handler started.')
         Thread(target=Connection.HandleServer, args=[connection]).start()
-        print('Server handler started.')
+        #print('Server handler started.')
