@@ -36,8 +36,8 @@ def HandlePacket(connection, packet, fromClient):
                 return HandleJoinPacket(connection, packet, fromClient)
             elif type(packet) == EntityUpdatePacket:
                 return HandleEntityUpdatePacket(connection, packet, fromClient)
-        except RuntimeError:
-            pass
+        except (RuntimeError, KeyError) as e:
+            print(e)
         else:
             break
 
