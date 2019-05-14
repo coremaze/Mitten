@@ -57,7 +57,7 @@ def HandleActionPacket(connection, packet, fromClient):
     #print(f'{lessRecentActions} less recent actions')
 
     
-    if recentActions >= 2 or lessRecentActions >= 420:
+    if recentActions >= 100 or lessRecentActions >= 420:
         IP = connection.ClientIP()
         BanIP(IP)
         print(f'Banning {IP}. They sent {recentActions} actions in the last 6 seconds, and {lessRecentActions} actions in the last 60 seconds.')
