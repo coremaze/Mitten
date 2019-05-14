@@ -8,7 +8,7 @@ action_packet_stacks = {}
 def BanIP(IP):
     while True:
         try:
-            with open('bans.txt', 'a+') as f:
+            with open('bans.txt', 'a') as f:
                 f.write(f'\n{IP}\n')
         except FileNotFoundError:
             with open('bans.txt', 'w') as f:
@@ -57,7 +57,7 @@ def HandleActionPacket(connection, packet, fromClient):
     #print(f'{lessRecentActions} less recent actions')
 
     
-    if recentActions >= 100 or lessRecentActions >= 420:
+    if recentActions >= 2 or lessRecentActions >= 420:
         IP = connection.ClientIP()
         BanIP(IP)
         print(f'Banning {IP}. They sent {recentActions} actions in the last 6 seconds, and {lessRecentActions} actions in the last 60 seconds.')

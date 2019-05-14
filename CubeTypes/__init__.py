@@ -6,3 +6,6 @@ from .Appearance import Appearance
 from .IntVector3 import IntVector3
 from .Item import Item
 from .Spirit import Spirit
+from .Equipment import Equipment
+from .StatMultipliers import StatMultipliers
+from .CreatureDelta import CreatureDelta
