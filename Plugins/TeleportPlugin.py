@@ -6,7 +6,6 @@ from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
 from CubeTypes import Appearance
 import time
-from copy import deepcopy
 
 DOTS_IN_BLOCK = 65536
 BLOCKS_IN_ZONE = 256
@@ -98,9 +97,6 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
 
 def teleport(connection, x, y, z):
     players[connection]['teleport'] = LongVector3(x, y, z)
-
-def DecodeString(by):
-    return ''.join([chr(x) for x in by]).rstrip('\x00') #probably more resilient
 
 def HandleChatPacket(connection, packet, fromClient):
     if not fromClient: return
