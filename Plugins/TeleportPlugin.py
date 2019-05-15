@@ -5,6 +5,7 @@ from CubeTypes import CreatureDelta
 from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
 from CubeTypes import Appearance
+from Mitten.Constants import *
 import time
 from copy import deepcopy
 
@@ -86,7 +87,7 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
         entity_id = packet.creatureDelta.entity_id
 
         # Block normal GUID 0 bug.
-        if entity_id == 0: return True
+        if entity_id == 0: return BLOCK
 
         # Save a local copy of the entites via their delta updates.
         # TODO(Andoryuuta): Find out when to delete these.
@@ -99,9 +100,6 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
 
 def teleport(connection, x, y, z):
     players[connection]['teleport'] = LongVector3(x, y, z)
-
-def DecodeString(by):
-    return ''.join([chr(x) for x in by]).rstrip('\x00') #probably more resilient
 
 def HandleChatPacket(connection, packet, fromClient):
     if not fromClient: return
@@ -122,7 +120,7 @@ def HandleChatPacket(connection, packet, fromClient):
             y = int(y) * DOTS_IN_BLOCK * BLOCKS_IN_ZONE
             z = 0
             teleport(connection, x, y, z)
-            return True
+            return BLOCK
         
         #Really not needed, or even helpful.
 ##        elif split[0] == '!tp':
@@ -136,7 +134,7 @@ def HandleChatPacket(connection, packet, fromClient):
         elif split[0] == '!tpspawn':
             spawn = players[connection]['initialCreature'].spawnPosition
             teleport(connection, spawn.x, spawn.y, spawn.z)
-            return True
+            return BLOCK
 
         elif split[0] == '!blockpos':
             pos = player['position']
@@ -144,46 +142,46 @@ def HandleChatPacket(connection, packet, fromClient):
             y = int(pos.y / DOTS_IN_BLOCK)
             z = int(pos.z / DOTS_IN_BLOCK)
             ChatPacket(f'[Mitten] Block pos X:{x} Y:{y} Z:{z}', 0).Send(connection, toServer=False)
-            return True
+            return BLOCK
 
         elif split[0] == '!zonepos':
             x = int(position.x / DOTS_IN_BLOCK / BLOCKS_IN_ZONE)
             y = int(position.y / DOTS_IN_BLOCK / BLOCKS_IN_ZONE)
             z = int(position.z / DOTS_IN_BLOCK / BLOCKS_IN_ZONE)
             ChatPacket(f'[Mitten] Zone pos X:{x} Y:{y} Z:{z}', 0).Send(connection, toServer=False)
-            return True
+            return BLOCK
 
         elif split[0] == '!listplayers':
             playerNames = [DecodeString(players[x]['fields']['name']) for x in players if 'name' in players[x]['fields']]
                     
             chatStr = '[Mitten] Players: ' + ', '.join(playerNames)
             ChatPacket(chatStr, 0).Send(connection, toServer=False)
-            return True
+            return BLOCK
 
         elif split[0] == '!goto':
-            cmd, playerName = split
+            playerName = ' '.join(split[1:])
 
             # Go over each entity we have and check if the name matches
-            matchingPlayers = [players[x] for x in players if DecodeString(players[x]['fields']['name']).lower() == playerName.lower()]
+            matchingPlayers = [players[x] for x in players if players[x]['fields']['name'].lower() == playerName.lower()]
             
             if not len(matchingPlayers):
                 ChatPacket(f'[Mitten] Found no match for {playerName}.', 0).Send(connection, toServer=False)
-                return True
+                return BLOCK
             
             tpPlayer = matchingPlayers[0]
 
             if tpPlayer is players[connection]:
                 ChatPacket(f'[Mitten] You are already in your location!', 0).Send(connection, toServer=False)
-                return True
+                return BLOCK
 
             ChatPacket(f'[Mitten] Teleporting to {playerName}!', 0).Send(connection, toServer=False)
 
             pos = tpPlayer['position']
             teleport(connection, pos.x, pos.y, 0)
-            return True
+            return BLOCK
 
             # No player was found
             ChatPacket(f'[Mitten] Player {playerName} not found.', 0).Send(connection, toServer=False)
     except (ValueError, IndexError):
         ChatPacket(f'[Mitten] Invalid command: {packet.message}', 0).Send(connection, toServer=False)
-        return True
+        return BLOCK

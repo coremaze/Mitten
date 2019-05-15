@@ -1,6 +1,7 @@
 from Packets.JoinPacket import JoinPacket
 from Packets.ChatPacket import ChatPacket
 from Packets.ActionPacket import ActionPacket
+from Mitten.Constants import *
 import time
 
 action_packet_stacks = {}
@@ -62,4 +63,4 @@ def HandleActionPacket(connection, packet, fromClient):
         BanIP(IP)
         print(f'Banning {IP}. They sent {recentActions} actions in the last 6 seconds, and {lessRecentActions} actions in the last 60 seconds.')
         connection.Close()
-        return True
+        return BLOCK

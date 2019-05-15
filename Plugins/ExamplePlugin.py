@@ -1,6 +1,9 @@
 from Packets.ChatPacket import ChatPacket
+from Mitten.Constants import *
 
-#return a true value to disallow packet from being further processed
+#return BLOCK to cancel processing of the packet
+#return MODIFY if you wish to change a packet
+#return None or NO_ACTION if you wish to do neither
 def HandlePacket(connection, packet, fromClient):
     #You can use the pID if you want
 ##    if packet.pID != 10:
@@ -18,12 +21,14 @@ def HandlePacket(connection, packet, fromClient):
 
     #You can stop a packet from being processed any further
     if 'shit' in packet.message:
-        return True
+        return BLOCK
 
     #You can send new packets
     if not fromClient and 'hello' in packet.message.lower():
         newPacket = ChatPacket('Hello!', 0)
         newPacket.Send(connection, fromClient)
+
+    return MODIFY
 
     
     

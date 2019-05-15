@@ -1,6 +1,7 @@
 from Packets.JoinPacket import JoinPacket
 from Packets.ChatPacket import ChatPacket
 from Packets.VersionPacket import VersionPacket
+from Mitten.Constants import *
 import time
 
 def IsBanned(IP):
@@ -33,14 +34,14 @@ def HandlePacket(connection, packet, fromClient):
             if IsBanned(IP) and connection not in banInProcess:
                 banInProcess.append(connection)
                 BanKick(connection)
-                return True
+                return BLOCK
     else:
         if type(packet) == JoinPacket:
             if IsBanned(IP) and connection not in banInProcess:
                 banInProcess.append(connection)
                 packet.Send(connection, fromClient)
                 BanKick(connection)
-                return True
+                return BLOCK
 
     
     

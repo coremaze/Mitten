@@ -1,5 +1,6 @@
 from Packets.ChatPacket import ChatPacket
 from Packets.TimePacket import TimePacket
+from Mitten.Constants import *
 
 custom_times = {}
 
@@ -13,6 +14,7 @@ def HandlePacket(connection, packet, fromClient):
 def HandleTimePacket(connection, packet, fromClient):
     if connection not in custom_times: return
     packet.time = custom_times[connection]
+    return MODIFY
     
     
 def HandleChatPacket(connection, packet, fromClient):
@@ -22,7 +24,7 @@ def HandleChatPacket(connection, packet, fromClient):
         del custom_times[connection]
         newPacket = ChatPacket(f'Time has been unset. (But only for you!)', 0)
         newPacket.Send(connection, toServer=False)
-        return True
+        return BLOCK
     
     args = packet.message.lower().split(' ')
     if len(args) != 3: return
@@ -42,6 +44,6 @@ def HandleChatPacket(connection, packet, fromClient):
 
     custom_times[connection] = mseconds
 
-    return True
+    return BLOCK
     
     

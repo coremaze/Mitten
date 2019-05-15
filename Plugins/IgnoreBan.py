@@ -1,6 +1,7 @@
 from Packets.JoinPacket import JoinPacket
 from Packets.ChatPacket import ChatPacket
 from Packets.VersionPacket import VersionPacket
+from Mitten.Constants import *
 import time
 
 aBannedConnections = {}
@@ -14,7 +15,7 @@ def HandlePacket(connection, packet, fromClient):
             print(f'{IP} Is banned and thinks we care about his packets')
             return
     if aBannedConnections.get(connection, False) is True and fromClient is True:
-        return True
+        return BLOCK
     elif aBannedConnections.get(connection, False) is True:
         return
 

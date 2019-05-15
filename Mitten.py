@@ -4,10 +4,30 @@ from threading import Thread
 import struct
 import Plugins
 import time
+from Mitten.Constants import *
 PACKETS_CLASSES = Packets.classes
 
 INTERNAL_SERVER = ('localhost', 12344)
 EXTERNAL_SERVER = ('', 12345)
+
+
+class ConnectionPacketCache():
+    def __init__(self, connection):
+        self.connection = connection
+        self._rawData = []
+        
+    def RecvServer(self, size):
+        data = self.connection.RecvServer(size)
+        self._rawData.append(data)
+        return data
+
+    def RecvClient(self, size):
+        data = self.connection.RecvClient(size)
+        self._rawData.append(data)
+        return data
+
+    def GetRawData(self):
+        return b''.join(self._rawData)
 
 class Connection():
     def __init__(self, clientSock, serverSock, address, port):
@@ -61,7 +81,11 @@ class Connection():
     def HandleClient(self):
         while not self.closed:
             try:
-                pID, = struct.unpack('<I', self.RecvClient(4))
+                #Keep track of whether the packet gets modified, for speed.
+                modified = False
+                cache = ConnectionPacketCache(self)
+                
+                pID, = struct.unpack('<I', cache.RecvClient(4))
 
                 #Find the class for this packet
                 for packet in PACKETS_CLASSES:
@@ -71,16 +95,30 @@ class Connection():
                 else:
                     print(f'Invalid packet ID from Client: {pID}')
                     self.Close()
-                packet = thisClass.Recv(self, fromClient=True)
+
+                #Get and parse the rest of the packet
+                packet = thisClass.Recv(cache, fromClient=True)
+
+                #Keep track of whether the client sends a packet,
+                #to keep them from holding the main CW server thread
                 self.joined = True
 
+                #Pass packet to every plugin
                 for plugin in Plugins.pluginList:
-                    if plugin.HandlePacket(self, packet, fromClient=True):
+                    result = plugin.HandlePacket(self, packet, fromClient=True)
+                    if result is BLOCK:
                         #print(f'[FROM CLIENT] Canceling a packet pID {pID}')
                         break
+                    modified |= result is MODIFY
+                        
                 else:
-                    #Export and send
-                    packet.Send(self, toServer=True)
+                    if modified:
+                        #Export and send
+                        print(f'FROM CLIENT {pID}')
+                        packet.Send(self, toServer=True)
+                    else:
+                        #Send original data
+                        self.SendServer(cache.GetRawData())
             except:
                 if not self.closed:
                     raise
@@ -90,7 +128,11 @@ class Connection():
     def HandleServer(self):
         while not self.closed:
             try:
-                pID, = struct.unpack('<I', self.RecvServer(4))
+                #Keep track of whether the packet gets modified, for speed.
+                modified = False
+                cache = ConnectionPacketCache(self)
+                
+                pID, = struct.unpack('<I', cache.RecvServer(4))
                 
                 #Find the class for this packet
                 for packet in PACKETS_CLASSES:
@@ -100,19 +142,28 @@ class Connection():
                 else:
                     print(f'Invalid packet ID from Client: {pID}')
                     self.Close()
-                packet = thisClass.Recv(self, fromClient=False)
 
+                #Get and parse the rest of the packet  
+                packet = thisClass.Recv(cache, fromClient=False)
+
+                #Pass packet to every plugin
                 for plugin in Plugins.pluginList:
-                    if plugin.HandlePacket(self, packet, fromClient=False):
+                    result = plugin.HandlePacket(self, packet, fromClient=False)
+                    if result is BLOCK:
                         #print(f'[FROM SERVER] Canceling a packet pID {pID}')
                         break
+                    modified |= result is MODIFY
                 else:
-                    #Export and send
-                    packet.Send(self, toServer=False)
+                    if modified:
+                        #Export and send
+                        print(f'FROM SERVER {pID}')
+                        packet.Send(self, toServer=False)
+                    else:
+                        #Send original data
+                        self.SendClient(cache.GetRawData())
             except:
                 if not self.closed:
-                    raise
-            
+                    raise  
             
     def Close(self):
         print(f'Closing connection to {self.ClientIP()}.')
@@ -121,6 +172,10 @@ class Connection():
         except Exception as e: print(e)
         try: self.serverSock.close()
         except Exception as e: print(e)
+
+
+
+    
 
 if __name__ == '__main__':
     listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

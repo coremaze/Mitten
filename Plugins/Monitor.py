@@ -11,6 +11,7 @@ from Packets.ShootPacket import ShootPacket
 from Packets.ActionPacket import ActionPacket
 from Packets.HitPacket import HitPacket
 from Packets.JoinPacket import JoinPacket
+from Mitten.Constants import *
 
 
 from CubeTypes import *
@@ -300,7 +301,7 @@ def HandleActionPacket(connection, packet, fromClient):
     BanIP(connection.ClientIP())
     print(f'[!] BANNED {connection.ClientIP()} from server.')
     connection.Close()
-    return True
+    return BLOCK
 
 def HandleGenericPacket(connection, packet, fromClient):
     if type(packet) in ( EntityUpdatePacket, EntityUpdateFinishedPacket ):
