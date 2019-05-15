@@ -1,13 +1,11 @@
 from Packets.ChatPacket import ChatPacket
 from Packets.JoinPacket import JoinPacket
 from Packets.EntityUpdatePacket import EntityUpdatePacket
-from CubeTypes import CreatureDelta
 from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
 from CubeTypes import Appearance
 from Mitten.Constants import *
 import time
-from copy import deepcopy
 
 DOTS_IN_BLOCK = 65536
 BLOCKS_IN_ZONE = 256
@@ -22,8 +20,7 @@ def HandlePacket(connection, packet, fromClient):
             #Make sure to keep the GUID 0 creature alive for the teleporting clients at all times
             if fromClient:
                 if connection in players and players[connection]['teleport']:
-                    newPacket = EntityUpdatePacket(CreatureDelta(0, {'position': players[connection]['teleport'], 'HP': 1.0}))
-                    newPacket.Send(connection, toServer=False)
+                    newPacket = EntityUpdatePacket(0, {'position': players[connection]['teleport'], 'HP': 1.0}).Send(connection, toServer=False)
 
             #remove old connections
             for c in list(players):
@@ -53,7 +50,7 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
     if fromClient:
         player = players[connection]
 
-        fields = packet.creatureDelta.fields
+        fields = packet.fields
         if 'fields' not in player:
             player['fields'] = fields
         else:
@@ -61,7 +58,7 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
         
         # Save the client's last position
         if 'position' in fields:
-            position = packet.creatureDelta.fields['position']
+            position = packet.fields['position']
             player['position'] = position
             #Is the player teleporting?
             if player['teleport']:
@@ -75,27 +72,26 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
                 # If so, get rid of the GUID 0 creature
                 if LongVector3(x1, y1, 0).Dist(LongVector3(x2, y2, 0)) <= DOTS_IN_BLOCK:
                     player['teleport'] = None
-                    newPacket = EntityUpdatePacket(CreatureDelta(0, {'HP': 0.0}))
+                    newPacket = EntityUpdatePacket(0, {'HP': 0.0})
                     newPacket.Send(connection, toServer=False)
                     # Now the client will think that _every_ entity has teleported to the GUID 0 entity,
                     # so we send the last known position for every we have.
                     for entity_id, fields in list(latestEntities.items()):
-                        EntityUpdatePacket(CreatureDelta(entity_id, {'position': fields['position']})).Send(connection, toServer=False)
+                        EntityUpdatePacket(entity_id, {'position': fields['position']}).Send(connection, toServer=False)
 
     # from server
     else:
-        entity_id = packet.creatureDelta.entity_id
+        entity_id = packet.entity_id
 
         # Block normal GUID 0 bug.
         if entity_id == 0: return BLOCK
 
         # Save a local copy of the entites via their delta updates.
         # TODO(Andoryuuta): Find out when to delete these.
-        fieldsCopy = deepcopy(packet.creatureDelta.fields)
         if entity_id in latestEntities:
-            latestEntities[entity_id].update(fieldsCopy)
+            latestEntities[entity_id].update(packet.fields)
         else:
-            latestEntities[entity_id] = fieldsCopy
+            latestEntities[entity_id] = packet.fields
 
 
 def teleport(connection, x, y, z):
@@ -152,7 +148,7 @@ def HandleChatPacket(connection, packet, fromClient):
             return BLOCK
 
         elif split[0] == '!listplayers':
-            playerNames = [DecodeString(players[x]['fields']['name']) for x in players if 'name' in players[x]['fields']]
+            playerNames = [players[x]['fields']['name'] for x in players if 'name' in players[x]['fields']]
                     
             chatStr = '[Mitten] Players: ' + ', '.join(playerNames)
             ChatPacket(chatStr, 0).Send(connection, toServer=False)
