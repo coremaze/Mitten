@@ -173,7 +173,7 @@ def HandleChatPacket(connection, packet, fromClient):
             ChatPacket(f'[Mitten] Teleporting to {playerName}!', 0).Send(connection, toServer=False)
 
             pos = tpPlayer['position']
-            teleport(connection, pos.x, pos.y, 0)
+            teleport(connection, pos.x, pos.y, pos.z-DOTS_IN_BLOCK*4)
             return BLOCK
 
             # No player was found
