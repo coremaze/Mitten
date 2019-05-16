@@ -114,7 +114,6 @@ class Connection():
                 else:
                     if modified:
                         #Export and send
-                        print(f'FROM CLIENT {pID}')
                         packet.Send(self, toServer=True)
                     else:
                         #Send original data
@@ -156,7 +155,6 @@ class Connection():
                 else:
                     if modified:
                         #Export and send
-                        print(f'FROM SERVER {pID}')
                         packet.Send(self, toServer=False)
                     else:
                         #Send original data
