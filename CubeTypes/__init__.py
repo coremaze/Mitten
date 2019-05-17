@@ -10,3 +10,6 @@ from .Equipment import Equipment
 from .StatMultipliers import StatMultipliers
 from .Block import Block
 from .Particle import Particle
+from .Sound import Sound
+from .StaticEntity import StaticEntity
+from .Mission import Mission
