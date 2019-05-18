@@ -1,4 +1,4 @@
-from CubeTypes.IntVector3 import IntVector3
+from CubeTypes.FloatVector3 import FloatVector3
 import struct
 
 class Sound():
@@ -10,7 +10,7 @@ class Sound():
         self.volume = volume
     @staticmethod
     def Import(data):
-        position = IntVector3.Import(data)
+        position = FloatVector3.Import(data)
         ID, = struct.unpack('<i', data.read(4))
         pitch, = struct.unpack('<f', data.read(4))
         volume, = struct.unpack('<f', data.read(4))
