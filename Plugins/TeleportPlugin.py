@@ -1,9 +1,11 @@
 from Packets.ChatPacket import ChatPacket
 from Packets.JoinPacket import JoinPacket
 from Packets.EntityUpdatePacket import EntityUpdatePacket
+from Packets.ServerUpdatePacket import ServerUpdatePacket
 from CubeTypes import LongVector3
 from CubeTypes import FloatVector3
 from CubeTypes import Appearance
+from CubeTypes import Sound
 from Mitten.Constants import *
 import time
 
@@ -96,6 +98,10 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
 
 def teleport(connection, x, y, z):
     players[connection]['teleport'] = LongVector3(x, y, z)
+    orgiginalpos = players[connection]['position']
+    ServerUpdatePacket([],[],[],[
+        Sound(FloatVector3(orgiginalpos.x/65536, orgiginalpos.y/65536, orgiginalpos.z/65536), 58, 0.35, 0.50)
+        ],[],[],{},{},[],[],[],[],[]).Send(connection, toServer=False)
 
 def HandleChatPacket(connection, packet, fromClient):
     if not fromClient: return
