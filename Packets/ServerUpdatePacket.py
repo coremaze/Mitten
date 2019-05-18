@@ -6,7 +6,7 @@ import zlib
 
 class ServerUpdatePacket(Packet):
     pID = 0x4
-    def __init__(self, blocks, hits, particles, sounds, projectiles, staticEntities, zoneItems, p48,
+    def __init__(self, blocks, hits, particles, sounds, projectiles, staticEntities, zoneItems, zoneDiscoveries,
                  pickups, kills, damages, passiveProcs, missions):
         self.blocks = blocks
         self.hits = hits
@@ -15,7 +15,7 @@ class ServerUpdatePacket(Packet):
         self.projectiles = projectiles
         self.staticEntities = staticEntities
         self.zoneItems = zoneItems
-        self.p48 = p48
+        self.zoneDiscoveries = zoneDiscoveries
         self.pickups = pickups
         self.kills = kills
         self.damages = damages
@@ -50,14 +50,15 @@ class ServerUpdatePacket(Packet):
             m = struct.unpack('I', data.read(4))[0]
             zoneItems[(zoneX, zoneY)].extend([Drop.Import(data) for x in range(m)])
 
-        p48 = {}
+        zoneDiscoveries = {}
         n = struct.unpack('I', data.read(4))[0]
         for _ in range(n):
-            something = struct.unpack('q', data.read(8))[0]
-            if something not in p48:
-                p48[something] = []
+            zoneX = struct.unpack('I', data.read(4))[0]
+            zoneY = struct.unpack('I', data.read(4))[0]
+            if (zoneX, zoneY) not in zoneDiscoveries:
+                zoneDiscoveries[(zoneX, zoneY)] = []
             m = struct.unpack('I', data.read(4))[0]
-            p48[something].extend([data.read(16) for x in range(m)])
+            zoneDiscoveries[(zoneX, zoneY)].extend([data.read(16) for x in range(m)])
 
 ##        p48 = []
 ##        n = struct.unpack('I', data.read(4))[0]
@@ -100,7 +101,7 @@ class ServerUpdatePacket(Packet):
         passiveProcs = [PassiveProc.Import(data) for x in range(struct.unpack('I', data.read(4))[0])]
         missions = [Mission.Import(data) for x in range(struct.unpack('I', data.read(4))[0])]
 
-        return ServerUpdatePacket(blocks, hits, particles, sounds, projectiles, staticEntities, zoneItems, p48,
+        return ServerUpdatePacket(blocks, hits, particles, sounds, projectiles, staticEntities, zoneItems, zoneDiscoveries,
                  pickups, kills, damages, passiveProcs, missions)
 
     def Export(self, toServer):
@@ -134,10 +135,11 @@ class ServerUpdatePacket(Packet):
             zlibDataList.append( struct.pack('<I', len(items)) )
             zlibDataList.extend( [x.Export() for x in items] )
 
-        zlibDataList.append( struct.pack('<I', len(self.p48)) )
-        for something in self.p48:
-            items = self.p48[something]
-            zlibDataList.append( struct.pack('<I', something) )
+        zlibDataList.append( struct.pack('<I', len(self.zoneDiscoveries)) )
+        for (zoneX, zoneY) in self.zoneDiscoveries:     
+            items = self.zoneDiscoveries[(zoneX, zoneY)]
+            zlibDataList.append( struct.pack('<I', zoneX) )
+            zlibDataList.append( struct.pack('<I', zoneY) )
             zlibDataList.append( struct.pack('<I', len(items)) )
             zlibDataList.extend( items )
 
