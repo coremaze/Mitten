@@ -13,3 +13,6 @@ from .Particle import Particle
 from .Sound import Sound
 from .StaticEntity import StaticEntity
 from .Mission import Mission
+from .Hit import Hit
+from .Drop import Drop
+from .Projectile import Projectile

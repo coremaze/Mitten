@@ -25,6 +25,7 @@ class StaticEntity():
     def Import(data):
         zoneX, = struct.unpack('<i', data.read(4))
         zoneY, = struct.unpack('<i', data.read(4))
+        ID, = struct.unpack('<i', data.read(4))
         unknownInt1, = struct.unpack('<i', data.read(4))
         _type, = struct.unpack('<i', data.read(4))
         unknownInt2, = struct.unpack('<i', data.read(4))
@@ -43,6 +44,7 @@ class StaticEntity():
         dataList = []
         dataList.append(struct.pack('<i', self.zoneX))
         dataList.append(struct.pack('<i', self.zoneY))
+        dataList.append(struct.pack('<i', self.ID))
         dataList.append(struct.pack('<i', self.unknownInt1))
         dataList.append(struct.pack('<i', self.type))
         dataList.append(struct.pack('<i', self.unknownInt2))
