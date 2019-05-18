@@ -5,7 +5,7 @@ import struct
 class StaticEntity():
     size = 88
     def __init__(self, zoneX, zoneY, ID, unknownInt1, _type, unknownInt2,
-                 position, rotation, size, closed, time, unknownInt3,
+                 position, rotation, scale, closed, time, unknownInt3,
                  unknownInt4, user):
         self.zoneX = zoneX
         self.zoneY = zoneY
@@ -15,7 +15,7 @@ class StaticEntity():
         self.unknownInt2 = unknownInt2
         self.position = position
         self.rotation = rotation
-        self.size = size
+        self.scale = scale
         self.closed = closed
         self.time = time
         self.unknownInt3 = unknownInt3
@@ -31,14 +31,14 @@ class StaticEntity():
         unknownInt2, = struct.unpack('<i', data.read(4))
         position = LongVector3.Import(data)
         rotation, = struct.unpack('<f', data.read(4))
-        size = FloatVector3.Import(data)
+        scale = FloatVector3.Import(data)
         closed, = struct.unpack('<i', data.read(4))
         time, = struct.unpack('<i', data.read(4))
         unknownInt3, = struct.unpack('<i', data.read(4))
         unknownInt4, = struct.unpack('<i', data.read(4))
         user, = struct.unpack('<q', data.read(8))
         return StaticEntity(zoneX, zoneY, ID, unknownInt1, _type, unknownInt2,
-                 position, rotation, size, closed, time, unknownInt3,
+                 position, rotation, scale, closed, time, unknownInt3,
                  unknownInt4, user)
     def Export(self):
         dataList = []
@@ -50,7 +50,7 @@ class StaticEntity():
         dataList.append(struct.pack('<i', self.unknownInt2))
         dataList.append(self.position.Export())
         dataList.append(struct.pack('<f', self.rotation))
-        dataList.append(self.size.Export())
+        dataList.append(self.scale.Export())
         dataList.append(struct.pack('<i', self.closed))
         dataList.append(struct.pack('<i', self.time))
         dataList.append(struct.pack('<i', self.unknownInt3))

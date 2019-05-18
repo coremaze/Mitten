@@ -1,4 +1,5 @@
-from CubeTypes.IntVector3 import IntVector3
+from CubeTypes.LongVector3 import LongVector3
+from CubeTypes.FloatVector3 import FloatVector3
 import struct
 
 class Projectile():
@@ -28,7 +29,7 @@ class Projectile():
         self.unknownInt8 = unknownInt8
 
     @staticmethod
-    def Recv(connection, data):
+    def Import(data):
         creatureID, = struct.unpack('<q', data.read(8)) 
         zoneX, = struct.unpack('<i', data.read(4))
         zoneY, = struct.unpack('<i', data.read(4))
@@ -55,7 +56,7 @@ class Projectile():
                  legacyDamage, unknownFloat1, size, mana, particles, skill,
                  projectile, unknownInt6, unknownInt7, unknownInt8)
 
-    def Export(self, toServer):
+    def Export(self):
         packetByteList = []
         packetByteList.append( struct.pack('<q', self.creatureID) )
         packetByteList.append( struct.pack('<i', self.zoneX) )

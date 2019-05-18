@@ -3,7 +3,7 @@ from CubeTypes import Item
 from CubeTypes import LongVector3
 
 class Drop():
-    size = 384
+    size = 328
     def __init__(self, item, position, rotation, scale, unknownInt1,
                  time, unknownInt2, unknownInt3):
         self.item = item
@@ -30,7 +30,7 @@ class Drop():
         dataList = []
         dataList.append(self.item.Export())
         dataList.append(self.position.Export())
-        dataList.append(struct.pack('<f', self.roation))
+        dataList.append(struct.pack('<f', self.rotation))
         dataList.append(struct.pack('<f', self.scale))
         dataList.append(struct.pack('<i', self.unknownInt1))
         dataList.append(struct.pack('<i', self.time))

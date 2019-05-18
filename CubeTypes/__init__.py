@@ -16,3 +16,7 @@ from .Mission import Mission
 from .Hit import Hit
 from .Drop import Drop
 from .Projectile import Projectile
+from .Pickup import Pickup
+from .Kill import Kill
+from .Damage import Damage
+from .PassiveProc import PassiveProc

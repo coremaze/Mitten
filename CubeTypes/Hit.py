@@ -28,7 +28,7 @@ class Hit():
         damage,      = struct.unpack('<f', data.read(4))
         isCritical,  = struct.unpack('<I', data.read(4))
         stunDur,     = struct.unpack('<I', data.read(4))
-        unkInt  = struct.unpack('<I', data.read(4))
+        unkInt,      = struct.unpack('<I', data.read(4))
         hitPos       = LongVector3.Import(data)
         hitDir       = FloatVector3.Import(data)
         isYellow,    = struct.unpack('<?', data.read(1))
@@ -39,9 +39,8 @@ class Hit():
         return Hit(attackerID, targetID, damage, isCritical, stunDur, unkInt, hitPos,
             hitDir, isYellow, hitType, showLight, unkByte)
 
-    def Export(self, toServer):
+    def Export(self):
         dataList = []
-        dataList.append(struct.pack('<I', HitPacket.pID))
         dataList.append(struct.pack('<Q', self.attackerID))
         dataList.append(struct.pack('<Q', self.targetID))
         dataList.append(struct.pack('<f', self.dmg))

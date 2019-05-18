@@ -25,7 +25,7 @@ class Block():
         dataList.append(struct.pack('<B', self.red))
         dataList.append(struct.pack('<B', self.green))
         dataList.append(struct.pack('<B', self.blue))
-        dataList.append(struct.pack('<B', self._type))
+        dataList.append(struct.pack('<B', self.type))
         dataList.append(struct.pack('<i', self.unkInt))
         data = b''.join(dataList)
         assert(len(data) == self.size)
