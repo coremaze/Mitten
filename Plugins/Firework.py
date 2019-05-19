@@ -1,5 +1,6 @@
 from Packets.ServerUpdatePacket import ServerUpdatePacket
 from Packets.EntityUpdatePacket import EntityUpdatePacket
+from Packets.EntityUpdateFinishedPacket import EntityUpdateFinishedPacket
 from Packets.ChatPacket import ChatPacket
 from CubeTypes.FloatVector3 import FloatVector3
 from CubeTypes.IntVector3 import IntVector3
@@ -17,9 +18,10 @@ from threading import Thread
 import time
 
 connections = []
-fireworkID = 10000
+fireworkID = 0x1200000000000000
+creatureDeltas = []
 def FireworkThread(position):
-    global connections, fireworkID
+    global connections, fireworkID, creatureDeltas
     position = LongVector3(position.x, position.y, position.z)
     time.sleep(3)
     cons = connections[:]
@@ -99,19 +101,22 @@ def FireworkThread(position):
         p.fields['equipment'].light.rarity = rarity
         #exporting the raw data manually is an optimization for speed
         raw_data = p.Export(False)
-        init_time = time.time()
-        while time.time() - init_time < 0.20:
-            for c in cons:
-                Thread(target=c.SendClient, args=[raw_data]).start()
-            time.sleep(0.001)
+        creatureDeltas.append(raw_data)
+        #don't know if we need to send here
+        for c in cons:
+            Thread(target=c.SendClient, args=[raw_data]).start()
+        time.sleep(0.2)
+        creatureDeltas.remove(raw_data)
+
 
     
 def Firework(position):
     Thread(target=FireworkThread, args=[position]).start()
 
+
 positions = {}
 def HandlePacket(connection, packet, fromClient):
-    global connections, positions, dummyDelta
+    global connections, positions, creatureDeltas
     if connection not in connections:
         connections.append(connection)
     connections = [x for x in connections if not x.closed]
@@ -126,3 +131,9 @@ def HandlePacket(connection, packet, fromClient):
         if packet.message == 'f' and connection in positions:
             Firework(positions[connection])
             return BLOCK
+    #Send any light sources right before the finish packet
+    elif type(packet) == EntityUpdateFinishedPacket and not fromClient:
+        #we're copying the list here to avoid threading issues
+        for d in creatureDeltas[:]:
+            connection.SendClient(d)
+        
