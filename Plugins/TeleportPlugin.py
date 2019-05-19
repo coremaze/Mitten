@@ -26,11 +26,6 @@ def HandlePacket(connection, packet, fromClient):
 
         if connection not in players:
             players[connection] = {'teleport':None}
-
-        #Make sure to keep the GUID 0 creature alive for the teleporting clients at all times
-        if fromClient:
-            if connection in players and players[connection]['teleport']:
-                newPacket = EntityUpdatePacket(0, {'position': players[connection]['teleport'], 'HP': 1.0}).Send(connection, toServer=False)
                 
         #Packet-specific handlers
         if type(packet) == ChatPacket:
@@ -71,11 +66,8 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
                 x2, y2 = destination.x, destination.y
                 
                 # Check to see if the player is there yet
-                # If so, get rid of the GUID 0 creature
                 if LongVector3(x1, y1, 0).Dist(LongVector3(x2, y2, 0)) <= DOTS_IN_BLOCK:
                     player['teleport'] = None
-                    newPacket = EntityUpdatePacket(0, {'HP': 0.0})
-                    newPacket.Send(connection, toServer=False)
                     # Now the client will think that _every_ entity has teleported to the GUID 0 entity,
                     # so we send the last known position for every we have.
                     for entity_id, fields in list(latestEntities.items()):
@@ -104,6 +96,7 @@ def teleport(connection, x, y, z):
     ServerUpdatePacket([],[],[],[
         Sound(FloatVector3(orgiginalpos.x/65536, orgiginalpos.y/65536, orgiginalpos.z/65536), 58, 0.35, 0.50)
         ],[],[],{},{},[],[],[],[],[]).Send(connection, toServer=False)
+    EntityUpdatePacket(0, {'position': LongVector3(x, y, z)}).Send(connection, toServer=False)
 
 def HandleChatPacket(connection, packet, fromClient):
     global players, spawnPoint
