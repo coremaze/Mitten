@@ -134,3 +134,4 @@ def HandlePacket(connection, packet, fromClient):
     elif type(packet) == ChatPacket and fromClient:
         if packet.message == 'f' and connection in positions:
             Firework(positions[connection])
+            return BLOCK
