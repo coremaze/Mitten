@@ -52,9 +52,24 @@ def FireworkThread(position):
     position.z += 65536 * 50
 
     #where the explosion noise will come from
-    boompos = FloatVector3(position.x/65536,
-                           position.y/65536,
-                           position.z/65536)
+    boomposes = []
+    #try to make it audible from further away
+    for xd in range(-60, 61, 20):
+        boomposes.append(FloatVector3(position.x/65536 + xd,
+                                          position.y/65536,
+                                          position.z/65536))
+    for yd in range(-60, 61, 30):
+        boomposes.append(FloatVector3(position.x/65536,
+                                      position.y/65536 + yd,
+                                      position.z/65536))
+
+    boomsounds = [[Sound(boompos, 19, 0.1, 4.0),
+        Sound(boompos, 19, 0.2, 3.5),
+        Sound(boompos, 19, 0.3, 3.0),
+        Sound(boompos, 19, 0.4, 2.5),
+        Sound(boompos, 19, 0.5, 2.0),
+        Sound(boompos, 25, 0.5, 0.1)] for boompos in boomposes]
+    boomsounds = [x for y in boomsounds for x in y]
 
                
     
@@ -65,15 +80,10 @@ def FireworkThread(position):
         #the fire particles
         Particle(position, FloatVector3(0.0,0.0,1.0), 1.0, 1.0, 1.0, 1.0,
                                 0.15, 50, 1, 20.0, 0)
-        ],[
+        ],
         #The boom is made from many layered sound effects
-        Sound(boompos, 19, 0.1, 7.0),
-        Sound(boompos, 19, 0.2, 6.0),
-        Sound(boompos, 19, 0.3, 5.0),
-        Sound(boompos, 19, 0.4, 4.0),
-        Sound(boompos, 19, 0.5, 3.0),
-        Sound(boompos, 25, 0.5, 0.3)
-        ],[],[],{},{},[],[],[],[],[])
+        boomsounds
+        ,[],[],{},{},[],[],[],[],[])
 
 
     #Constuct the entity which will be holding the light source
