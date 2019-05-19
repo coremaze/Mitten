@@ -14,49 +14,49 @@ BLOCKS_IN_ZONE = 256
 
 latestEntities = {} # keyed by entity_id
 players = {} # keyed by connection
+spawnPoint = None
 
 def HandlePacket(connection, packet, fromClient):
     #this catastophe can have dicts being modified from other threads while in use
-    for retry in range(3):
-        try:
-            #Make sure to keep the GUID 0 creature alive for the teleporting clients at all times
-            if fromClient:
-                if connection in players and players[connection]['teleport']:
-                    newPacket = EntityUpdatePacket(0, {'position': players[connection]['teleport'], 'HP': 1.0}).Send(connection, toServer=False)
+    try:
+        #remove old connections
+        for c in list(players):
+            if c.closed:
+                del players[c]
 
-            #remove old connections
-            for c in list(players):
-                if c.closed:
-                    del players[c]
-                    
-            #Packet-specific handlers
-            if type(packet) == ChatPacket:
-                return HandleChatPacket(connection, packet, fromClient)
-            elif type(packet) == JoinPacket:
-                return HandleJoinPacket(connection, packet, fromClient)
-            elif type(packet) == EntityUpdatePacket:
-                return HandleEntityUpdatePacket(connection, packet, fromClient)
-        except (RuntimeError, KeyError) as e:
-            print(e)
-        else:
-            break
+        if connection not in players:
+            players[connection] = {'teleport':None}
+
+        #Make sure to keep the GUID 0 creature alive for the teleporting clients at all times
+        if fromClient:
+            if connection in players and players[connection]['teleport']:
+                newPacket = EntityUpdatePacket(0, {'position': players[connection]['teleport'], 'HP': 1.0}).Send(connection, toServer=False)
+                
+        #Packet-specific handlers
+        if type(packet) == ChatPacket:
+            return HandleChatPacket(connection, packet, fromClient)
+        elif type(packet) == JoinPacket:
+            return HandleJoinPacket(connection, packet, fromClient)
+        elif type(packet) == EntityUpdatePacket:
+            return HandleEntityUpdatePacket(connection, packet, fromClient)
+    except Exception as e:
+        print(e)
 
 
 def HandleJoinPacket(connection, packet, fromClient):
-    if connection not in players:
-        players[connection] = {'teleport':None}
-        players[connection]['initialCreature'] = packet.creature
-        players[connection]['position'] = packet.creature.position
+    global spawnPoint
+    if fromClient: return
+    spawnPoint = packet.creature.position
+    
     
 def HandleEntityUpdatePacket(connection, packet, fromClient):
+    global players
     if fromClient:
         player = players[connection]
 
         fields = packet.fields
-        if 'fields' not in player:
-            player['fields'] = fields
-        else:
-            player['fields'].update(fields)
+        if 'fields' not in player: player['fields'] = fields
+        else:                      player['fields'].update(fields)
         
         # Save the client's last position
         if 'position' in fields:
@@ -97,6 +97,8 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
 
 
 def teleport(connection, x, y, z):
+    global players
+    if connection not in players: return
     players[connection]['teleport'] = LongVector3(x, y, z)
     orgiginalpos = players[connection]['position']
     ServerUpdatePacket([],[],[],[
@@ -104,15 +106,15 @@ def teleport(connection, x, y, z):
         ],[],[],{},{},[],[],[],[],[]).Send(connection, toServer=False)
 
 def HandleChatPacket(connection, packet, fromClient):
+    global players, spawnPoint
     if not fromClient: return
     if connection not in players: return
-    
     player = players[connection]
     if 'position' not in player: return
     
     split = packet.message.lower().split()
     if not len(split): return
-    
+
     position = player['position']
     
     try:
@@ -134,8 +136,10 @@ def HandleChatPacket(connection, packet, fromClient):
 ##            return True
 
         elif split[0] == '!tpspawn':
-            spawn = players[connection]['initialCreature'].spawnPosition
-            teleport(connection, spawn.x, spawn.y, spawn.z)
+            if spawnPoint:
+                teleport(connection, spawnPoint.x, spawnPoint.y, spawnPoint.z)
+            else:
+                teleport(connection, 32800 * DOTS_IN_BLOCK * BLOCKS_IN_ZONE, 32800 * DOTS_IN_BLOCK * BLOCKS_IN_ZONE, 0)
             return BLOCK
 
         elif split[0] == '!blockpos':
@@ -154,7 +158,9 @@ def HandleChatPacket(connection, packet, fromClient):
             return BLOCK
 
         elif split[0] == '!listplayers':
-            playerNames = [players[x]['fields']['name'] for x in players if 'name' in players[x]['fields']]
+            playerNames = [players[x]['fields']['name'] for x in players
+                           if 'fields' in players[x]
+                           and 'name' in players[x]['fields']]
                     
             chatStr = '[Mitten] Players: ' + ', '.join(playerNames)
             ChatPacket(chatStr, 0).Send(connection, toServer=False)
@@ -164,7 +170,10 @@ def HandleChatPacket(connection, packet, fromClient):
             playerName = ' '.join(split[1:])
 
             # Go over each entity we have and check if the name matches
-            matchingPlayers = [players[x] for x in players if players[x]['fields']['name'].lower() == playerName.lower()]
+            matchingPlayers = [players[x] for x in players
+                               if 'fields' in players[x]
+                               and 'name' in players[x]['fields']
+                               and players[x]['fields']['name'].lower() == playerName.lower()]
             
             if not len(matchingPlayers):
                 ChatPacket(f'[Mitten] Found no match for {playerName}.', 0).Send(connection, toServer=False)
