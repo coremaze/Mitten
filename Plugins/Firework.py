@@ -7,13 +7,17 @@ from CubeTypes.LongVector3 import LongVector3
 from CubeTypes import Particle
 from CubeTypes import Sound
 from CubeTypes import StaticEntity
+from CubeTypes import Spirit
+from CubeTypes import Item
+from CubeTypes import Equipment
+from CubeTypes import Appearance
 from Mitten.Constants import *
 from random import uniform as r
 from threading import Thread
 import time
 
 connections = []
-fireworkID = 0
+fireworkID = 10000
 def FireworkThread(position):
     global connections, fireworkID
     position = LongVector3(position.x, position.y, position.z)
@@ -50,32 +54,7 @@ def FireworkThread(position):
                            position.y/65536,
                            position.z/65536)
 
-
-    sentities = []
-    for xd in range(-15, 16, 15):
-        for yd in range(-15, 16, 15):
-            for zd in range(-15, 16, 15):
-                pos = LongVector3(position.x + xd*65536,
-                                  position.y + yd*65536,
-                                  position.z + zd*65536,)
-                sentities.append(StaticEntity((pos.x // 65536) // 256,
-                     (pos.y // 65536) // 256,
-                     fireworkID,
-                     0,
-                     50,
-                     0,
-                     pos,
-                     0,
-                     FloatVector3(0.0, 0.0, 0.0),
-                     1,
-                     0,
-                     0,
-                     0,
-                     0
-                     ))
-                fireworkID += 1
-                fireworkID %= 100
-                
+               
     
     sup = ServerUpdatePacket([],[],[
         #the colored particles
@@ -92,26 +71,39 @@ def FireworkThread(position):
         Sound(boompos, 19, 0.4, 4.0),
         Sound(boompos, 19, 0.5, 3.0),
         Sound(boompos, 25, 0.5, 0.3)
-        ],[],
-        #Static entities
-        sentities
-        ,{},{},[],[],[],[],[])
+        ],[],[],{},{},[],[],[],[],[])
 
+
+    #Constuct the entity which will be holding the light source
+    equipList = [Item(24, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, [Spirit(0, 0, 0, 0, 0, 0) for i in range(32)], 0) for _ in range(13)]
+    appearance = Appearance(0, 0, 0, 0, 0, 0, 0, FloatVector3(0.0, 0.0, 0.0),
+                 1, 1, 0, 0, 0, 0,
+                 0, 0, 0, 0, 0, 0,
+                 0, 0, 0, 0, 0, 0,
+                 0, 0, 0, 0, 0, 0, FloatVector3(0.0, 0.0, 0.0),
+                 FloatVector3(0.0, 0.0, 0.0), FloatVector3(0.0, 0.0, 0.0), FloatVector3(0.0, 0.0, 0.0), FloatVector3(0.0, 0.0, 0.0), FloatVector3(0.0, 0.0, 0.0))
+    
+    this_id, fireworkID = fireworkID, fireworkID+1
+    p = EntityUpdatePacket(this_id, {'position': position,
+                                    'equipment': Equipment(*equipList),
+                                    'creatureFlags': 0xFFFF,
+                                    'appearance': appearance,
+                                    'name': 'Firework'})
+    
     #send noise and particles to everyone
     for c in cons:
         Thread(target=sup.Send, args=[c, False]).start()
 
-    #get rid of light sources
-    time.sleep(1.0)
-    for s in sentities:
-        s.type = 0
-        sup = ServerUpdatePacket([],[],[],[],[],
-        #Static entities
-        sentities
-        ,{},{},[],[],[],[],[])
-        for c in cons:
-            Thread(target=sup.Send, args=[c, False]).start()
-        time.sleep(0.05)
+    #send and update the light source
+    for rarity in range(13, -1, -1):
+        p.fields['equipment'].light.rarity = rarity
+        #exporting the raw data manually is an optimization for speed
+        raw_data = p.Export(False)
+        init_time = time.time()
+        while time.time() - init_time < 0.20:
+            for c in cons:
+                Thread(target=c.SendClient, args=[raw_data]).start()
+            time.sleep(0.001)
 
     
 def Firework(position):
@@ -119,7 +111,7 @@ def Firework(position):
 
 positions = {}
 def HandlePacket(connection, packet, fromClient):
-    global connections, positions
+    global connections, positions, dummyDelta
     if connection not in connections:
         connections.append(connection)
     connections = [x for x in connections if not x.closed]
@@ -130,7 +122,6 @@ def HandlePacket(connection, packet, fromClient):
             for c in list(positions):
                 if c.closed:
                     del positions[c]
-                    
     elif type(packet) == ChatPacket and fromClient:
         if packet.message == 'f' and connection in positions:
             Firework(positions[connection])
