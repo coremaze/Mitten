@@ -54,11 +54,11 @@ def FireworkThread(position):
     #where the explosion noise will come from
     boomposes = []
     #try to make it audible from further away
-    for xd in range(-60, 61, 20):
+    for xd in range(-60, 61, 60):
         boomposes.append(FloatVector3(position.x/65536 + xd,
                                           position.y/65536,
                                           position.z/65536))
-    for yd in range(-60, 61, 30):
+    for yd in range(-60, 61, 60):
         boomposes.append(FloatVector3(position.x/65536,
                                       position.y/65536 + yd,
                                       position.z/65536))
