@@ -17,6 +17,8 @@ class Item():
         self.unkByte = unkByte
         self.level = level
         self.unkShort2 = unkShort2
+        if len(spirits) != 32:
+            raise ValueError('An Item must have 32 Spirits.')
         self.spirits = spirits
         self.numSpirits = numSpirits
 
