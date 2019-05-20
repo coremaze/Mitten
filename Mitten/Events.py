@@ -12,9 +12,28 @@ class OnServerFailure():
     Triggered the server refuses a connection.
     '''
     pass
+
+class OnConnect():
+    '''
+    Triggered the server refuses a connection.
+
+    connection: The new Connection
+    '''
+    pass
+
+class OnDisconnect():
+    '''
+    Triggered the server refuses a connection.
+
+    connection: The departing Connection
+    '''
+    pass
+
 MITTEN_EVENTS = {
     OnPacket: [],
     OnServerFailure: [],
+    OnConnect: [],
+    OnDisconnect: []
     }
 
 def Handle(eventType):

@@ -31,6 +31,7 @@ class ConnectionPacketCache():
         return b''.join(self._rawData)
 
 class Connection():
+    connections = []
     def __init__(self, clientSock, serverSock, address, port):
         self.clientSock = clientSock
         self.serverSock = serverSock
@@ -38,6 +39,10 @@ class Connection():
         self.clientPort = port
         self.closed = False
         self.joined = False
+        self.connections.append(self)
+        #Handle new connection
+        for handler in MITTEN_EVENTS[OnConnect]:
+            handler(self)
         
     def SendServer(self, data):
         try: self.serverSock.sendall(data)
@@ -165,8 +170,12 @@ class Connection():
                     raise  
             
     def Close(self):
-        print(f'Closing connection to {self.ClientIP()}.')
-        self.closed = True
+        if not self.closed:
+            self.closed = True
+            self.connections.remove(self)
+            #Handle disconnection
+            for handler in MITTEN_EVENTS[OnDisconnect]:
+                handler(self)
         try: self.clientSock.close()
         except Exception as e: print(e)
         try: self.serverSock.close()
