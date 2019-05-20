@@ -5,6 +5,7 @@ import struct
 import Plugins
 import time
 from Mitten.Constants import *
+from Mitten.Events import *
 PACKETS_CLASSES = Packets.classes
 
 INTERNAL_SERVER = ('localhost', 12344)
@@ -104,8 +105,8 @@ class Connection():
                 self.joined = True
 
                 #Pass packet to every plugin
-                for plugin in Plugins.pluginList:
-                    result = plugin.HandlePacket(self, packet, fromClient=True)
+                for packetHandler in MITTEN_EVENTS[OnPacket]:
+                    result = packetHandler(self, packet, fromClient=True)
                     if result is BLOCK:
                         #print(f'[FROM CLIENT] Canceling a packet pID {pID}')
                         break
@@ -146,8 +147,8 @@ class Connection():
                 packet = thisClass.Recv(cache, fromClient=False)
 
                 #Pass packet to every plugin
-                for plugin in Plugins.pluginList:
-                    result = plugin.HandlePacket(self, packet, fromClient=False)
+                for packetHandler in MITTEN_EVENTS[OnPacket]:
+                    result = packetHandler(self, packet, fromClient=False)
                     if result is BLOCK:
                         #print(f'[FROM SERVER] Canceling a packet pID {pID}')
                         break
@@ -187,7 +188,11 @@ if __name__ == '__main__':
         #Make a connection to the server
         serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #print(f'Attempting to connect to server.')
-        serverSock.connect((INTERNAL_SERVER))
+        try:
+            serverSock.connect((INTERNAL_SERVER))
+        except ConnectionRefusedError:
+            for handler in MITTEN_EVENTS[OnServerFailure]:
+                handler()
         #print(f'Connected to server.')
 
         address, port = clientAddr

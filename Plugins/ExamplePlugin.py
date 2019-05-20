@@ -1,9 +1,11 @@
 from Packets.ChatPacket import ChatPacket
 from Mitten.Constants import *
+from Mitten.Events import *
 
 #return BLOCK to cancel processing of the packet
 #return MODIFY if you wish to change a packet
 #return None or NO_ACTION if you wish to do neither
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     #You can use the pID if you want
 ##    if packet.pID != 10:

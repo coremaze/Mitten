@@ -2,6 +2,7 @@ from Packets.JoinPacket import JoinPacket
 from Packets.ChatPacket import ChatPacket
 from Packets.ActionPacket import ActionPacket
 from Mitten.Constants import *
+from Mitten.Events import *
 import time
 
 action_packet_stacks = {}
@@ -17,6 +18,7 @@ def BanIP(IP):
         else:
             break
 
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     if not fromClient:
         return

@@ -1,9 +1,11 @@
 from Packets.ChatPacket import ChatPacket
 from Packets.TimePacket import TimePacket
 from Mitten.Constants import *
+from Mitten.Events import *
 
 custom_times = {}
 
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     if type(packet) == ChatPacket:
         return HandleChatPacket(connection, packet, fromClient)

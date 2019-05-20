@@ -12,6 +12,7 @@ from Packets.ActionPacket import ActionPacket
 from Packets.HitPacket import HitPacket
 from Packets.JoinPacket import JoinPacket
 from Mitten.Constants import *
+from Mitten.Events import *
 
 
 from CubeTypes import *
@@ -312,7 +313,8 @@ def HandleGenericPacket(connection, packet, fromClient):
 
 
                                                     
-# Packet event - called every time a packet is received.                                                   
+# Packet event - called every time a packet is received.
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     return aHandlers.get(type(packet).pID, HandleGenericPacket)(connection, packet, fromClient)
     
