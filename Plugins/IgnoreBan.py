@@ -30,6 +30,19 @@ class Banner():
             self.Update()
         return IP in self.IPs
 
+    def Ban(self, IP):
+        self.IPs.append(IP)
+        while True:
+            try:
+                with open('bans.txt', 'a+') as f:
+                    f.write(f'\n{IP}\n')
+            except FileNotFoundError:
+                with open('bans.txt', 'w') as _:
+                    pass
+            else:
+                break
+
+
 
 class Holder():
     holders = []
@@ -58,22 +71,23 @@ banner = Banner()
 def HandlePacket(connection, packet, fromClient):
     global banner
     IP = connection.ClientIP()
-    #handle new banned connections
+    # If not banned but not visited yet
     if banner.IsBanned(IP) and aBannedConnections.get(connection, False) is False:
         aBannedConnections[connection] = True
+        print('Version 1.0 - IgnoreBan.py')
         print(f'{IP} Is banned and thinks we care about his packets')
         
-    #Hold banned connections from client or server
+    # If visited
     if aBannedConnections.get(connection, False) is True:
-        #Get or make a holder
+        # Hold current connection
         if connection not in [x.connection for x in Holder.holders]:
             Holder(connection)
         holder = [x for x in Holder.holders if x.connection == connection][0]
         
         if fromClient:
-            #Send a versionpacket just to make sure the loser gets his join packet
-            #We can't allow the client to do this on their own because they could
-            #spam version packets
+            # Send a versionpacket just to make sure the loser gets his join packet
+            # We can't allow the client to do this on their own because they could
+            # spam version packets
             VersionPacket(3).Send(connection, toServer=True)
             holder.HoldClient()
             return BLOCK
