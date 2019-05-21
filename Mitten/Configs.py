@@ -47,6 +47,6 @@ def GetAttribute(plugin, attribute, default=None):
 
 def SetAttribute(plugin, attribute, value):
     string = PluginName(plugin)
-    CONFIG[attribute] = value
+    CONFIG[string][attribute] = value
     SaveConfig()
     
