@@ -74,7 +74,6 @@ def HandlePacket(connection, packet, fromClient):
     # If not banned but not visited yet
     if banner.IsBanned(IP) and aBannedConnections.get(connection, False) is False:
         aBannedConnections[connection] = True
-        print('Version 1.0 - IgnoreBan.py')
         print(f'{IP} Is banned and thinks we care about his packets')
         
     # If visited

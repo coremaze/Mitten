@@ -26,7 +26,7 @@ def UpdateHostilities():
 def HandleConnection(connection):
     global PLAYERS
     PLAYERS[connection] = {'team': None, 'ID':0}
-    print(f'{connection} is joining None')
+    #print(f'{connection} is joining None')
 
 @Handle(OnDisconnect)
 def HandleDisconnect(connection):

@@ -3,6 +3,7 @@ from Packets.EntityUpdatePacket import EntityUpdatePacket
 from Packets.ActionPacket import ActionPacket
 from Packets.VersionPacket import VersionPacket
 from Plugins.IgnoreBan import aBannedConnections, banner
+from Mitten.Events import *
 
 # Currently Implemented:
 # Bad Item banner
@@ -52,6 +53,7 @@ def HandleActionPacket(connection, packet):
 
     return
 
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     if not fromClient: return
     return aHandlers.get(type(packet).pID, HandleGenericPacket)(connection, packet)

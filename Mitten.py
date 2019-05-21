@@ -192,7 +192,7 @@ if __name__ == '__main__':
         #Accept connection from client
         listenSock.listen(1)
         clientSock, clientAddr = listenSock.accept()
-        print(f'Received a client connection from {clientAddr}.')
+        #print(f'Received a client connection from {clientAddr}.')
 
         #Make a connection to the server
         serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
