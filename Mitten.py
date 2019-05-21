@@ -5,6 +5,7 @@ import struct
 import Plugins
 import time
 from Mitten.Constants import *
+from Mitten.Events import *
 PACKETS_CLASSES = Packets.classes
 
 INTERNAL_SERVER = ('localhost', 12344)
@@ -30,6 +31,7 @@ class ConnectionPacketCache():
         return b''.join(self._rawData)
 
 class Connection():
+    connections = []
     def __init__(self, clientSock, serverSock, address, port):
         self.clientSock = clientSock
         self.serverSock = serverSock
@@ -37,6 +39,10 @@ class Connection():
         self.clientPort = port
         self.closed = False
         self.joined = False
+        self.connections.append(self)
+        #Handle new connection
+        for handler in MITTEN_EVENTS[OnConnect]:
+            handler(self)
         
     def SendServer(self, data):
         try: self.serverSock.sendall(data)
@@ -104,8 +110,8 @@ class Connection():
                 self.joined = True
 
                 #Pass packet to every plugin
-                for plugin in Plugins.pluginList:
-                    result = plugin.HandlePacket(self, packet, fromClient=True)
+                for packetHandler in MITTEN_EVENTS[OnPacket]:
+                    result = packetHandler(self, packet, fromClient=True)
                     if result is BLOCK:
                         #print(f'[FROM CLIENT] Canceling a packet pID {pID}')
                         break
@@ -146,8 +152,8 @@ class Connection():
                 packet = thisClass.Recv(cache, fromClient=False)
 
                 #Pass packet to every plugin
-                for plugin in Plugins.pluginList:
-                    result = plugin.HandlePacket(self, packet, fromClient=False)
+                for packetHandler in MITTEN_EVENTS[OnPacket]:
+                    result = packetHandler(self, packet, fromClient=False)
                     if result is BLOCK:
                         #print(f'[FROM SERVER] Canceling a packet pID {pID}')
                         break
@@ -164,8 +170,12 @@ class Connection():
                     raise  
             
     def Close(self):
-        print(f'Closing connection to {self.ClientIP()}.')
-        self.closed = True
+        if not self.closed:
+            self.closed = True
+            self.connections.remove(self)
+            #Handle disconnection
+            for handler in MITTEN_EVENTS[OnDisconnect]:
+                handler(self)
         try: self.clientSock.close()
         except Exception as e: print(e)
         try: self.serverSock.close()
@@ -187,7 +197,11 @@ if __name__ == '__main__':
         #Make a connection to the server
         serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #print(f'Attempting to connect to server.')
-        serverSock.connect((INTERNAL_SERVER))
+        try:
+            serverSock.connect((INTERNAL_SERVER))
+        except ConnectionRefusedError:
+            for handler in MITTEN_EVENTS[OnServerFailure]:
+                handler()
         #print(f'Connected to server.')
 
         address, port = clientAddr

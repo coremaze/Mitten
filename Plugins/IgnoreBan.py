@@ -2,6 +2,7 @@ from Packets.JoinPacket import JoinPacket
 from Packets.ChatPacket import ChatPacket
 from Packets.VersionPacket import VersionPacket
 from Mitten.Constants import *
+from Mitten.Events import *
 import time
 
 class Banner():
@@ -53,7 +54,7 @@ class Holder():
         
 aBannedConnections = {}
 banner = Banner()
-
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     global banner
     IP = connection.ClientIP()

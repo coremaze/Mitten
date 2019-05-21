@@ -7,6 +7,7 @@ from CubeTypes import FloatVector3
 from CubeTypes import Appearance
 from CubeTypes import Sound
 from Mitten.Constants import *
+from Mitten.Events import *
 import time
 
 DOTS_IN_BLOCK = 65536
@@ -16,6 +17,7 @@ latestEntities = {} # keyed by entity_id
 players = {} # keyed by connection
 spawnPoint = None
 
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     #this catastophe can have dicts being modified from other threads while in use
     try:

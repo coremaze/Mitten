@@ -13,6 +13,7 @@ from CubeTypes import Item
 from CubeTypes import Equipment
 from CubeTypes import Appearance
 from Mitten.Constants import *
+from Mitten.Events import *
 from random import uniform as r
 from threading import Thread
 import time
@@ -125,6 +126,7 @@ def Firework(position):
 
 
 positions = {}
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     global connections, positions, creatureDeltas
     if connection not in connections:

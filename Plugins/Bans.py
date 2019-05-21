@@ -2,6 +2,7 @@ from Packets.JoinPacket import JoinPacket
 from Packets.ChatPacket import ChatPacket
 from Packets.VersionPacket import VersionPacket
 from Mitten.Constants import *
+from Mitten.Events import *
 import time
 
 def IsBanned(IP):
@@ -27,6 +28,7 @@ def BanKick(connection):
     connection.Close()
     banInProcess = [x for x in banInProcess if x != connection]
 
+@Handle(OnPacket)
 def HandlePacket(connection, packet, fromClient):
     IP = connection.ClientIP()
     if fromClient:
