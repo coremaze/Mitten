@@ -72,7 +72,7 @@ def HandleEntityUpdate(connection, packet, fromClient):
     if not (PLAYERS[connection]['ID'] and PLAYERS[otherConn]['ID']): return
     if PLAYERS[connection]['team'] != PLAYERS[otherConn]['team']:
         h1 = int(PLAYERS[connection]['team'] is not None and PLAYERS[otherConn]['team'] is not None)
-        h2 = d1['team'] != d2['team']
+        h2 = PLAYERS[connection]['team'] != PLAYERS[otherConn]['team']
         packet.fields['hostility'] = h1 and h2
         return MODIFY
     
