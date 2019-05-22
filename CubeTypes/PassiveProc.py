@@ -22,7 +22,7 @@ class PassiveProc():
         
         return PassiveProc(source, target, procType, modifier, duration, unknownInt, poisonSource)
 
-    def Export(self, toServer):
+    def Export(self):
         dataList = []
         dataList.append( struct.pack('<q', self.source) )
         dataList.append( struct.pack('<q', self.target) )

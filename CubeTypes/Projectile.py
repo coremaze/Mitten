@@ -3,9 +3,10 @@ from CubeTypes.FloatVector3 import FloatVector3
 import struct
 
 class Projectile():
+    size = 112
     def __init__(self, creatureID, zoneX, zoneY, unknownInt1, unknownInt2,
                  position, unknownInt3, unknownInt4, unknownInt5, velocity,
-                 legacyDamage, unknownFloat1, size, mana, particles, skill,
+                 legacyDamage, unknownFloat1, scale, mana, particles, skill,
                  projectile, unknownInt6, unknownInt7, unknownInt8):
         self.creatureID = creatureID
         self.zoneX = zoneX
@@ -19,7 +20,7 @@ class Projectile():
         self.velocity = velocity
         self.legacyDamage = legacyDamage
         self.unknownFloat1 = unknownFloat1
-        self.size = size
+        self.scale = scale
         self.mana = mana
         self.particles = particles
         self.skill = skill
@@ -42,7 +43,7 @@ class Projectile():
         velocity = FloatVector3.Import(data)
         legacyDamage, = struct.unpack('<f', data.read(4))
         unknownFloat1, = struct.unpack('<f', data.read(4))
-        size, = struct.unpack('<f', data.read(4))
+        scale, = struct.unpack('<f', data.read(4))
         mana, = struct.unpack('<f', data.read(4))
         particles, = struct.unpack('<i', data.read(4))
         skill, = struct.unpack('<i', data.read(4))
@@ -53,7 +54,7 @@ class Projectile():
         
         return Projectile(creatureID, zoneX, zoneY, unknownInt1, unknownInt2,
                  position, unknownInt3, unknownInt4, unknownInt5, velocity,
-                 legacyDamage, unknownFloat1, size, mana, particles, skill,
+                 legacyDamage, unknownFloat1, scale, mana, particles, skill,
                  projectile, unknownInt6, unknownInt7, unknownInt8)
 
     def Export(self):
@@ -70,7 +71,7 @@ class Projectile():
         packetByteList.append( self.velocity.Export() )
         packetByteList.append( struct.pack('<f', self.legacyDamage) )
         packetByteList.append( struct.pack('<f', self.unknownFloat1) )
-        packetByteList.append( struct.pack('<f', self.size) )
+        packetByteList.append( struct.pack('<f', self.scale) )
         packetByteList.append( struct.pack('<f', self.mana) )
         packetByteList.append( struct.pack('<i', self.particles) )
         packetByteList.append( struct.pack('<i', self.skill) )
@@ -78,4 +79,6 @@ class Projectile():
         packetByteList.append( struct.pack('<i', self.unknownInt6) )
         packetByteList.append( struct.pack('<i', self.unknownInt7) )
         packetByteList.append( struct.pack('<i', self.unknownInt8) )
-        return b''.join(packetByteList)
+        data = b''.join(packetByteList)
+        assert(len(data) == self.size)
+        return data

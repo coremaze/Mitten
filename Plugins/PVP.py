@@ -81,17 +81,17 @@ def HandleHit(connection, packet, fromClient):
     #Block anyone who doesn't have an ID yet
     if not PLAYERS[connection]['ID']: return BLOCK
     #Block if the player is claiming they're an entity they're not
-    if PLAYERS[connection]['ID'] != packet.attackerID: return BLOCK
+    if PLAYERS[connection]['ID'] != packet.hit.attackerID: return BLOCK
     #Allow if the target is not a player
-    if packet.targetID not in [x['ID'] for x in PLAYERS.values()]: return NO_ACTION
+    if packet.hit.targetID not in [x['ID'] for x in PLAYERS.values()]: return NO_ACTION
 
     try:
-        otherPlayer = PLAYERS[GetConnectionByID(packet.targetID)]
+        otherPlayer = PLAYERS[GetConnectionByID(packet.hit.targetID)]
         thisPlayer = PLAYERS[connection]
     except KeyError:
         return BLOCK
 
-    if packet.dmg >= 0:
+    if packet.hit.dmg >= 0:
         #Block if either are not on a team and attacking
         if otherPlayer['team'] is None or thisPlayer['team'] is None: return BLOCK
 
