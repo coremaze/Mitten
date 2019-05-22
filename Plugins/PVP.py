@@ -1,9 +1,6 @@
 from Mitten.Events import *
 from Mitten.Constants import *
-from Packets.EntityUpdatePacket import EntityUpdatePacket
-from Packets.JoinPacket import JoinPacket
-from Packets.ChatPacket import ChatPacket
-from Packets.HitPacket import HitPacket
+from Packets import *
 from threading import Thread
 
 PLAYERS = {}

@@ -1,7 +1,5 @@
 from Mitten.Constants import *
-from Packets.EntityUpdatePacket import EntityUpdatePacket
-from Packets.ActionPacket import ActionPacket
-from Packets.VersionPacket import VersionPacket
+from Packets import *
 from Plugins.IgnoreBan import aBannedConnections, banner
 from Mitten.Events import *
 

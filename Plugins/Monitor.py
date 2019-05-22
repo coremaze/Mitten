@@ -1,16 +1,5 @@
 # Imports
-from Packets.EntityUpdatePacket import EntityUpdatePacket
-from Packets.AirTrafficPacket import AirTrafficPacket
-from Packets.TimePacket import TimePacket
-from Packets.EntityUpdateFinishedPacket import EntityUpdateFinishedPacket
-from Packets.ServerUpdatePacket import ServerUpdatePacket
-from Packets.BuildingModPacket import BuildingModZoneLoadPacket, BuildingModZoneUnloadPacket
-from Packets.RegionDiscoveredPacket import RegionDiscoveredPacket
-from Packets.ZoneDiscoveredPacket import ZoneDiscoveredPacket
-from Packets.ShootPacket import ShootPacket
-from Packets.ActionPacket import ActionPacket
-from Packets.HitPacket import HitPacket
-from Packets.JoinPacket import JoinPacket
+from Packets import *
 from Mitten.Constants import *
 from Mitten.Events import *
 

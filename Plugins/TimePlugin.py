@@ -1,5 +1,4 @@
-from Packets.ChatPacket import ChatPacket
-from Packets.TimePacket import TimePacket
+from Packets import *
 from Mitten.Constants import *
 from Mitten.Events import *
 

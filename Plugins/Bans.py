@@ -1,6 +1,4 @@
-from Packets.JoinPacket import JoinPacket
-from Packets.ChatPacket import ChatPacket
-from Packets.VersionPacket import VersionPacket
+from Packets import *
 from Mitten.Constants import *
 from Mitten.Events import *
 import time
