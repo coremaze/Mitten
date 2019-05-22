@@ -181,34 +181,39 @@ class Connection():
         try: self.serverSock.close()
         except Exception as e: print(e)
 
+    def StartHandlers(self):
+        Thread(target=self.HandleClient).start()
+        Thread(target=self.HandleServer).start()
 
 
-    
+
+
+def ListenBind(server):
+    listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    listenSock.bind(server)
+    return listenSock
+
+def MakeServerConnection(server):
+    serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        serverSock.connect(server)
+    except ConnectionRefusedError:
+        for handler in MITTEN_EVENTS[OnServerFailure]:
+            handler()
+    return serverSock
+
+def AcceptClient(listenSock):
+    listenSock.listen(1)
+    clientSock, clientAddr = listenSock.accept()
+    address, port = clientAddr
+    return clientSock, address, port
+
 
 if __name__ == '__main__':
-    listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    listenSock.bind((EXTERNAL_SERVER))
+    listenSock = ListenBind(EXTERNAL_SERVER)
     while True:
-        #Accept connection from client
-        listenSock.listen(1)
-        clientSock, clientAddr = listenSock.accept()
-        #print(f'Received a client connection from {clientAddr}.')
-
-        #Make a connection to the server
-        serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #print(f'Attempting to connect to server.')
-        try:
-            serverSock.connect((INTERNAL_SERVER))
-        except ConnectionRefusedError:
-            for handler in MITTEN_EVENTS[OnServerFailure]:
-                handler()
-        #print(f'Connected to server.')
-
-        address, port = clientAddr
+        clientSock, address, port = AcceptClient(listenSock)
+        serverSock = MakeServerConnection(INTERNAL_SERVER)
         connection = Connection(clientSock, serverSock, address, port)
-
-        #Create threads for each of these connections
-        Thread(target=Connection.HandleClient, args=[connection]).start()
-        #print('Client handler started.')
-        Thread(target=Connection.HandleServer, args=[connection]).start()
-        #print('Server handler started.')
+        connection.StartHandlers()
+        
