@@ -5,8 +5,19 @@ from CubeTypes.FloatVector3 import FloatVector3
 
 class Airship():
     size = 120
-    def __init__(self, ID, unkInt1, unkInt2, position, velocity, rotation, station, pathRotation, unkInt3,
-                 destination, flightState, unkInt4):
+    def __init__(self,
+                 ID = 0,
+                 unkInt1 = 0,
+                 unkInt2 = 0,
+                 position = LongVector3(),
+                 velocity = FloatVector3(),
+                 rotation = 0.0,
+                 station = LongVector3(),
+                 pathRotation = 0.0,
+                 unkInt3 = 0,
+                 destination = LongVector3(),
+                 flightState = 0,
+                 unkInt4 = 0):
         self.ID = ID
         self.unkInt1 = unkInt1
         self.unkInt2 = unkInt2

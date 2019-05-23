@@ -4,8 +4,20 @@ from CubeTypes.Spirit import Spirit
 
 class Item():
     size = 280
-    def __init__(self, itemType, subType, unkShort1, modifier, minusModifier, rarity,
-                 material, adapted, unkByte, level, unkShort2, spirits, numSpirits):
+    def __init__(self,
+                 itemType = 0,
+                 subType = 0,
+                 unkShort1 = 0,
+                 modifier = 0,
+                 minusModifier = 0,
+                 rarity = 0,
+                 material = 0,
+                 adapted = 0,
+                 unkByte = 0,
+                 level = 0,
+                 unkShort2 = 0,
+                 spirits = [Spirit() for _ in range(32)],
+                 numSpirits = 0):
         self.itemType = itemType
         self.subType = subType
         self.unkShort1 = unkShort1

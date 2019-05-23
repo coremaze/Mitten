@@ -4,8 +4,15 @@ from CubeTypes import LongVector3
 
 class Drop():
     size = 328
-    def __init__(self, item, position, rotation, scale, unknownInt1,
-                 time, unknownInt2, unknownInt3):
+    def __init__(self,
+                 item = Item(),
+                 position = LongVector3(),
+                 rotation = 0.0,
+                 scale = 0.0,
+                 unknownInt1 = 0,
+                 time = 0,
+                 unknownInt2 = 0,
+                 unknownInt3 = 0):
         self.item = item
         self.position = position
         self.rotation = rotation

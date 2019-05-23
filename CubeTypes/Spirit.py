@@ -3,7 +3,7 @@ import io
 
 class Spirit():
     size = 8
-    def __init__(self, x, y, z, material, level, unkShort):
+    def __init__(self, x=0, y=0, z=0, material=0, level=0, unkShort=0):
         self.x = x
         self.y = y
         self.z = z

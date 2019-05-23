@@ -3,7 +3,7 @@ import io
 from .Packet import Packet
 class ChatPacket(Packet):
     pID = 0xA
-    def __init__(self, message, entityID=None):
+    def __init__(self, message='', entityID=None):
         self.message = message
         self.entityID = entityID
 

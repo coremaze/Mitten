@@ -2,8 +2,20 @@ from CubeTypes.Item import Item
 
 class Equipment():
     size = Item.size*13
-    def __init__(self, unkItem1, necklace, chest, feet, hands, shoulder, leftWeapon,
-                 rightWeapon, leftRing, rightRing, light, special, pet):
+    def __init__(self,
+                 unkItem1 = Item(),
+                 necklace = Item(),
+                 chest = Item(),
+                 feet = Item(),
+                 hands = Item(),
+                 shoulder = Item(),
+                 leftWeapon = Item(),
+                 rightWeapon = Item(),
+                 leftRing = Item(),
+                 rightRing = Item(),
+                 light = Item(),
+                 special = Item(),
+                 pet = Item()):
         self.unkItem1 = unkItem1
         self.necklace = necklace
         self.chest = chest

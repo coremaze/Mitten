@@ -4,9 +4,21 @@ import struct
 
 class StaticEntity():
     size = 88
-    def __init__(self, zoneX, zoneY, ID, unknownInt1, _type, unknownInt2,
-                 position, rotation, scale, closed, time, unknownInt3,
-                 unknownInt4, user):
+    def __init__(self,
+                 zoneX = 0,
+                 zoneY = 0,
+                 ID = 0,
+                 unknownInt1 = 0,
+                 _type = 0,
+                 unknownInt2 = 0,
+                 position = LongVector3(0,0,0),
+                 rotation = 0,
+                 scale = FloatVector3(0.0,0.0,0.0),
+                 closed = 0,
+                 time = 0,
+                 unknownInt3 = 0,
+                 unknownInt4 = 0,
+                 user = 0):
         self.zoneX = zoneX
         self.zoneY = zoneY
         self.ID = ID

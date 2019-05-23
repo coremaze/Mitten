@@ -3,7 +3,7 @@ import io
 from .Packet import Packet
 class VersionPacket(Packet):
     pID = 0x11
-    def __init__(self, versionNumber):
+    def __init__(self, versionNumber = 3):
         self.versionNumber = versionNumber
 
     @staticmethod

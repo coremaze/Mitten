@@ -5,8 +5,19 @@ from CubeTypes import FloatVector3
 
 class Hit():
     size = 72
-    def __init__(self, attackerID, targetID, dmg, isCrit, stunDur, unkInt,
-            hitPos, hitDir, isYellow, hitType, showLight, unkByte ):
+    def __init__(self,
+                 attackerID = 0,
+                 targetID = 0,
+                 dmg = 0.0,
+                 isCrit = 0,
+                 stunDur = 0,
+                 unkInt = 0,
+                 hitPos = LongVector3(0,0,0),
+                 hitDir = FloatVector3(0.0,0.0,0.0),
+                 isYellow = False,
+                 hitType = 0,
+                 showLight = False,
+                 unkByte = 0):
         self.attackerID = attackerID
         self.targetID   = targetID
         self.dmg        = dmg

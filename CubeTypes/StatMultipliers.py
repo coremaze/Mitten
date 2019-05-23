@@ -1,7 +1,12 @@
 import struct
 class StatMultipliers():
     size = 20
-    def __init__(self, HPMultiplier, attackSpeedMultiplier, damageMultiplier, armorMultiplier, resistanceMultiplier):
+    def __init__(self,
+                 HPMultiplier = 0.0,
+                 attackSpeedMultiplier = 0.0,
+                 damageMultiplier = 0.0,
+                 armorMultiplier = 0.0,
+                 resistanceMultiplier = 0.0):
         self.HPMultiplier = HPMultiplier
         self.attackSpeedMultiplier = attackSpeedMultiplier
         self.damageMultiplier = damageMultiplier

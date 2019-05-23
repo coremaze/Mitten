@@ -3,7 +3,7 @@ import io
 from .Packet import Packet
 class MapSeedPacket(Packet):
     pID = 0xF
-    def __init__(self, seed):
+    def __init__(self, seed=0):
         self.seed = seed
 
     @staticmethod

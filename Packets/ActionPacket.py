@@ -4,7 +4,15 @@ from .Packet import Packet
 from CubeTypes.Item import Item
 class ActionPacket(Packet):
     pID = 0x6
-    def __init__(self, item, zoneX, zoneY, index, unknownInt, interactionType, unkByte, unkShort):
+    def __init__(self,
+                 item = Item(),
+                 zoneX = 0,
+                 zoneY = 0,
+                 index = 0,
+                 unknownInt = 0,
+                 interactionType = 0,
+                 unkByte = 0,
+                 unkShort = 0):
         self.item = item
         self.zoneX = zoneX
         self.zoneY = zoneY

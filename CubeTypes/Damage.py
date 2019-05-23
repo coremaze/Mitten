@@ -2,7 +2,7 @@ import struct
 
 class Damage():
     size = 24
-    def __init__(self, target, attacker, damage, unknownInt):
+    def __init__(self, target = 0, attacker = 0, damage = 0.0, unknownInt = 0):
         self.target = target
         self.attacker = attacker
         self.damage = damage

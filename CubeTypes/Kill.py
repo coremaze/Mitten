@@ -2,7 +2,7 @@ import struct
 
 class Kill():
     size = 24
-    def __init__(self, killer, killed, unknownInt, XP):
+    def __init__(self, killer = 0, killed = 0, unknownInt = 0, XP = 0):
         self.killer = killer
         self.killed = killed
         self.unknownInt = unknownInt

@@ -4,7 +4,7 @@ from .Packet import Packet
 from CubeTypes import Projectile
 class ShootPacket(Packet):
     pID = 0x9
-    def __init__(self, projectile):
+    def __init__(self, projectile=Projectile()):
         self.projectile = projectile
 
     @staticmethod

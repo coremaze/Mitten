@@ -4,10 +4,27 @@ import struct
 
 class Projectile():
     size = 112
-    def __init__(self, creatureID, zoneX, zoneY, unknownInt1, unknownInt2,
-                 position, unknownInt3, unknownInt4, unknownInt5, velocity,
-                 legacyDamage, unknownFloat1, scale, mana, particles, skill,
-                 projectile, unknownInt6, unknownInt7, unknownInt8):
+    def __init__(self,
+                 creatureID = 0,
+                 zoneX = 0,
+                 zoneY = 0,
+                 unknownInt1 = 0,
+                 unknownInt2 = 0,
+                 position = LongVector3(0,0,0),
+                 unknownInt3 = 0,
+                 unknownInt4 = 0,
+                 unknownInt5 = 0,
+                 velocity = FloatVector3(0,0,0),
+                 legacyDamage = 0.0,
+                 unknownFloat1 = 0.0,
+                 scale = 0.0,
+                 mana = 0.0,
+                 particles = 0,
+                 skill = 0,
+                 projectile = 0,
+                 unknownInt6 = 0,
+                 unknownInt7 = 0,
+                 unknownInt8 = 0):
         self.creatureID = creatureID
         self.zoneX = zoneX
         self.zoneY = zoneY

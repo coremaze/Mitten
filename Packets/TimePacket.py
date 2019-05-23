@@ -3,7 +3,7 @@ import io
 from .Packet import Packet
 class TimePacket(Packet):
     pID = 0x5
-    def __init__(self, day, time):
+    def __init__(self, day=0, time=0):
         self.day  = day
         self.time = time
     

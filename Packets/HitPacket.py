@@ -6,7 +6,7 @@ from CubeTypes import Hit
 from .Packet import Packet
 class HitPacket(Packet):
     pID = 0x7
-    def __init__(self, hit):
+    def __init__(self, hit=Hit()):
         self.hit = hit
         
     @staticmethod

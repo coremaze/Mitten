@@ -1,7 +1,14 @@
 import struct
 class PassiveProc():
     size = 40
-    def __init__(self, source, target, procType, modifier, duration, unknownInt, poisonSource):
+    def __init__(self,
+                 source = 0,
+                 target = 0,
+                 procType = 0,
+                 modifier = 0,
+                 duration = 0,
+                 unknownInt = 0,
+                 poisonSource = 0):
         self.source = source
         self.target = target
         self.procType = procType

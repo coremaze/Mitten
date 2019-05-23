@@ -4,7 +4,7 @@ from CubeTypes import Airship
 from .Packet import Packet
 class AirTrafficPacket(Packet):
     pID = 0x3
-    def __init__(self, airships):
+    def __init__(self, airships = []):
         self.airships = airships
         self.count = len(airships)
 

@@ -4,8 +4,18 @@ import struct
 
 class Particle():
     size = 72
-    def __init__(self, position, acceleration, red, green, blue, alpha,
-                 scale, count, _type, spreading, unkInt):
+    def __init__(self,
+                 position = LongVector3(),
+                 acceleration = FloatVector3(),
+                 red = 0,
+                 green = 0,
+                 blue = 0,
+                 alpha = 0,
+                 scale = 0.0,
+                 count = 0,
+                 _type = 0,
+                 spreading = 0,
+                 unkInt = 0):
         self.position = position
         self.acceleration = acceleration
         self.red = red

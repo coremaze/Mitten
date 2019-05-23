@@ -4,7 +4,7 @@ from .Packet import Packet
 from CubeTypes import PassiveProc
 class PassiveProcPacket(Packet):
     pID = 0x8
-    def __init__(self, passiveProc):
+    def __init__(self, passiveProc = PassiveProc()):
         self.passiveProc = passiveProc
 
     @staticmethod

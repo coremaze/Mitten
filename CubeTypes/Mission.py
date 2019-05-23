@@ -1,9 +1,23 @@
 import struct
 class Mission():
     size = 56
-    def __init__(self, regionX, regionY, unknownInt1, unknownInt2, unknownInt3,
-                 missionID, _type, monsterID, level, unknownByte, state, unknownShort,
-                 currentHP, maxHP, zoneX, zoneY):
+    def __init__(self,
+                 regionX = 0,
+                 regionY = 0,
+                 unknownInt1 = 0,
+                 unknownInt2 = 0,
+                 unknownInt3 = 0,
+                 missionID = 0,
+                 _type = 0,
+                 monsterID = 0,
+                 level = 0,
+                 unknownByte = 0,
+                 state = 0,
+                 unknownShort = 0,
+                 currentHP = 0.0,
+                 maxHP = 0.0,
+                 zoneX = 0,
+                 zoneY = 0):
         self.regionX = regionX
         self.regionY = regionY
         self.unknownInt1 = unknownInt1

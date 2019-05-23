@@ -100,7 +100,7 @@ assert(len(DELTA_TYPES) == 48)
 
 class EntityUpdatePacket(Packet):
     pID = 0x0
-    def __init__(self, entity_id, fields):
+    def __init__(self, entity_id = 0, fields = {}):
         self.entity_id = entity_id
         self.fields = fields
 

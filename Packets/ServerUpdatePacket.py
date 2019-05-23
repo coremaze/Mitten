@@ -6,8 +6,20 @@ import zlib
 
 class ServerUpdatePacket(Packet):
     pID = 0x4
-    def __init__(self, blocks, hits, particles, sounds, projectiles, staticEntities, zoneItems, zoneDiscoveries,
-                 pickups, kills, damages, passiveProcs, missions):
+    def __init__(self,
+                 blocks = [],
+                 hits = [],
+                 particles = [],
+                 sounds = [],
+                 projectiles = [],
+                 staticEntities = [],
+                 zoneItems = {},
+                 zoneDiscoveries = {},
+                 pickups = [],
+                 kills = [],
+                 damages = [],
+                 passiveProcs = [],
+                 missions = []):
         self.blocks = blocks
         self.hits = hits
         self.particles = particles
