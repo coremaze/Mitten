@@ -4,7 +4,6 @@ from Mitten.Events import *
 from CubeTypes import *
 from math import fmod
 
-
 GUIDS = {}
 
 @Handle(OnPacket)
@@ -32,40 +31,19 @@ def HandleChat(connection, packet, fromClient):
         except:
             return
 
+        #create coins to add up to what the player wants
         pickups = []
+        for material, coinScale in ((11, 10000), (12, 100), (10, 1)):
+            item = Item()
+            item.itemType = 12 #coin
+            item.subType = 0
+            item.level = int(float(amount) / coinScale)
+            item.material = material
+            amount = int(fmod(amount, coinScale))
+            pickups.append(Pickup(GUIDS[connection], item))
 
-        
-        #gold
-        itemid = 12
-        itemsubid = 0
-        level = int(float(amount) / 10000)
-        material = 11 #gold
-        item = Item(itemid, itemsubid, 2162, 0, 0, 0,
-                 material, 0, 0, level, 0, [Spirit(0,0,0,0,0,0) for _ in range(32)], 0)
-        amount = int(fmod(amount, 10000))
-        pickups.append(Pickup(GUIDS[connection], item))
-
-        #silver
-        itemid = 12
-        itemsubid = 0
-        level = int(float(amount) / 100)
-        material = 12 #silver
-        item = Item(itemid, itemsubid, 2162, 0, 0, 0,
-                 material, 0, 0, level, 0, [Spirit(0,0,0,0,0,0) for _ in range(32)], 0)
-        amount = int(fmod(amount, 100))
-        pickups.append(Pickup(GUIDS[connection], item))
-
-        #copper
-        itemid = 12
-        itemsubid = 0
-        level = amount
-        material = 10 #copper
-        item = Item(itemid, itemsubid, 2162, 0, 0, 0,
-                 material, 0, 0, level, 0, [Spirit(0,0,0,0,0,0) for _ in range(32)], 0)
-        pickups.append(Pickup(GUIDS[connection], item))
-
-
-        sup = ServerUpdatePacket([], [], [], [], [], [], {}, {}, pickups, [], [], [], [])
+        sup = ServerUpdatePacket()
+        sup.pickups = pickups
         sup.Send(connection, toServer=False)
 
 def HandleJoin(connection, packet, fromClient):
