@@ -86,12 +86,6 @@ def FireworkThread(position):
 
     #Constuct the entity which will be holding the light source
     equipList = [Item(24, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, [Spirit(0, 0, 0, 0, 0, 0) for i in range(32)], 0) for _ in range(13)]
-    appearance = Appearance(0, 0, 0, 0, 0, 0, 0, FloatVector3(0.0, 0.0, 0.0),
-                 1, 1, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, FloatVector3(0.0, 0.0, 0.0),
-                 FloatVector3(0.0, 0.0, 0.0), FloatVector3(0.0, 0.0, 0.0), FloatVector3(0.0, 0.0, 0.0), FloatVector3(0.0, 0.0, 0.0), FloatVector3(0.0, 0.0, 0.0))
     
     this_id, fireworkID = fireworkID, fireworkID+1
     p = EntityUpdatePacket(this_id, {'position': position,
