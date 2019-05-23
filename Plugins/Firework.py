@@ -97,7 +97,7 @@ def FireworkThread(position):
     p = EntityUpdatePacket(this_id, {'position': position,
                                     'equipment': Equipment(*equipList),
                                     'creatureFlags': 0xFFFF,
-                                    'appearance': appearance,
+                                    'appearance': Appearance(scale=FloatVector3(0.0,0.0,0.0)),
                                     'name': 'Firework'})
     
     #send noise and particles to everyone
