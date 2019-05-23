@@ -213,7 +213,15 @@ if __name__ == '__main__':
     listenSock = ListenBind(EXTERNAL_SERVER)
     while True:
         clientSock, address, port = AcceptClient(listenSock)
-        serverSock = MakeServerConnection(INTERNAL_SERVER)
-        connection = Connection(clientSock, serverSock, address, port)
-        connection.StartHandlers()
+        server = INTERNAL_SERVER
+        for handler in MITTEN_EVENTS[OnForward]:
+            result = handler(clientSock, address, port)
+            if result is BLOCK:
+                break
+            if type(result) == tuple:
+                server = result
+        else:
+            serverSock = MakeServerConnection(server)
+            connection = Connection(clientSock, serverSock, address, port)
+            connection.StartHandlers()
         
