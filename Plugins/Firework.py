@@ -88,7 +88,7 @@ def FireworkThread(position):
     equipList = [Item(24, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, [Spirit(0, 0, 0, 0, 0, 0) for i in range(32)], 0) for _ in range(13)]
     
     this_id, fireworkID = fireworkID, fireworkID+1
-    p = EntityUpdatePacket(this_id, {'position': position,
+    p = CreatureUpdatePacket(this_id, {'position': position,
                                     'equipment': Equipment(*equipList),
                                     'creatureFlags': 0xFFFF,
                                     'appearance': Appearance(scale=FloatVector3(0.0,0.0,0.0)),
@@ -123,7 +123,7 @@ def HandlePacket(connection, packet, fromClient):
     if connection not in connections:
         connections.append(connection)
     connections = [x for x in connections if not x.closed]
-    if type(packet) == EntityUpdatePacket and fromClient:
+    if type(packet) == CreatureUpdatePacket and fromClient:
         if 'position' in packet.fields:
             position = packet.fields['position']
             positions[connection] = position
@@ -135,7 +135,7 @@ def HandlePacket(connection, packet, fromClient):
             Firework(positions[connection])
             return BLOCK
     #Send any light sources right before the finish packet
-    elif type(packet) == EntityUpdateFinishedPacket and not fromClient:
+    elif type(packet) == CreatureUpdateFinishedPacket and not fromClient:
         #we're copying the list here to avoid threading issues
         for d in creatureDeltas[:]:
             connection.SendClient(d)

@@ -294,7 +294,7 @@ def HandleActionPacket(connection, packet, fromClient):
     return BLOCK
 
 def HandleGenericPacket(connection, packet, fromClient):
-    if type(packet) in ( EntityUpdatePacket, EntityUpdateFinishedPacket ):
+    if type(packet) in ( CreatureUpdatePacket, CreatureUpdateFinishedPacket ):
         return
     if not fromClient: return
     sPrefix = ["[FROM SERVER]", "[FROM CLIENT]"][fromClient]

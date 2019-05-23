@@ -31,8 +31,8 @@ def HandlePacket(connection, packet, fromClient):
             return HandleChatPacket(connection, packet, fromClient)
         elif type(packet) == JoinPacket:
             return HandleJoinPacket(connection, packet, fromClient)
-        elif type(packet) == EntityUpdatePacket:
-            return HandleEntityUpdatePacket(connection, packet, fromClient)
+        elif type(packet) == CreatureUpdatePacket:
+            return HandleCreatureUpdatePacket(connection, packet, fromClient)
     except Exception as e:
         print(e)
 
@@ -43,7 +43,7 @@ def HandleJoinPacket(connection, packet, fromClient):
     spawnPoint = packet.creature.position
     
     
-def HandleEntityUpdatePacket(connection, packet, fromClient):
+def HandleCreatureUpdatePacket(connection, packet, fromClient):
     global players
     if fromClient:
         player = players[connection]
@@ -70,7 +70,7 @@ def HandleEntityUpdatePacket(connection, packet, fromClient):
                     # Now the client will think that _every_ entity has teleported to the GUID 0 entity,
                     # so we send the last known position for every we have.
                     for entity_id, fields in list(latestEntities.items()):
-                        EntityUpdatePacket(entity_id, {'position': fields['position']}).Send(connection, toServer=False)
+                        CreatureUpdatePacket(entity_id, {'position': fields['position']}).Send(connection, toServer=False)
 
     # from server
     else:
@@ -95,7 +95,7 @@ def teleport(connection, x, y, z):
     ServerUpdatePacket([],[],[],[
         Sound(FloatVector3(orgiginalpos.x/65536, orgiginalpos.y/65536, orgiginalpos.z/65536), 58, 0.35, 0.50)
         ],[],[],{},{},[],[],[],[],[]).Send(connection, toServer=False)
-    EntityUpdatePacket(0, {'position': LongVector3(x, y, z)}).Send(connection, toServer=False)
+    CreatureUpdatePacket(0, {'position': LongVector3(x, y, z)}).Send(connection, toServer=False)
 
 def HandleChatPacket(connection, packet, fromClient):
     global players, spawnPoint

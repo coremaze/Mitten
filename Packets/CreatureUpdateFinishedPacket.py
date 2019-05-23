@@ -1,7 +1,7 @@
 import struct
 import io
 from .Packet import Packet
-class EntityUpdateFinishedPacket(Packet):
+class CreatureUpdateFinishedPacket(Packet):
     pID = 0x2
     def __init__(self):
         pass
@@ -9,11 +9,11 @@ class EntityUpdateFinishedPacket(Packet):
     @staticmethod
     def Recv(connection, fromClient):
         recv = [connection.RecvServer, connection.RecvClient][fromClient] 
-        return EntityUpdateFinishedPacket()
+        return CreatureUpdateFinishedPacket()
 
     def Export(self, toServer):
         packetByteList = []
-        packetByteList.append( struct.pack('<I', EntityUpdateFinishedPacket.pID) )
+        packetByteList.append( struct.pack('<I', CreatureUpdateFinishedPacket.pID) )
         return b''.join(packetByteList)
 
     def Send(self, connection, toServer):

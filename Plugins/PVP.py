@@ -17,8 +17,8 @@ def UpdateHostilities():
             h1 = int(d1['team'] is not None and d2['team'] is not None)
             h2 = d1['team'] != d2['team']
             h = h1 and h2
-            Thread(target=EntityUpdatePacket(d1['ID'], {'hostility':h}).Send, args=[c2, False]).start()
-            Thread(target=EntityUpdatePacket(d2['ID'], {'hostility':h}).Send, args=[c1, False]).start()
+            Thread(target=CreatureUpdatePacket(d1['ID'], {'hostility':h}).Send, args=[c2, False]).start()
+            Thread(target=CreatureUpdatePacket(d2['ID'], {'hostility':h}).Send, args=[c1, False]).start()
 
 @Handle(OnConnect)
 def HandleConnection(connection):
@@ -38,8 +38,8 @@ def HandlePacket(connection, packet, fromClient):
         return HandleChat(connection, packet, fromClient)
     if type(packet) == JoinPacket:
         return HandleJoin(connection, packet, fromClient)
-    if type(packet) == EntityUpdatePacket:
-        return HandleEntityUpdate(connection, packet, fromClient)
+    if type(packet) == CreatureUpdatePacket:
+        return HandleCreatureUpdate(connection, packet, fromClient)
     if type(packet) == HitPacket:
         return HandleHit(connection, packet, fromClient)
 
@@ -62,7 +62,7 @@ def HandleChat(connection, packet, fromClient):
     UpdateHostilities()
 
 
-def HandleEntityUpdate(connection, packet, fromClient):
+def HandleCreatureUpdate(connection, packet, fromClient):
     if fromClient: return
     if 'hostility' not in packet.fields: return
     fromID = packet.entity_id

@@ -38,7 +38,7 @@ def HandleVersionPacket(connection, packet):
     aWaitingForEntUpdate[connection] = True
     return
 
-def HandleEntityUpdatePacket(connection, packet):
+def HandleCreatureUpdatePacket(connection, packet):
     global aWaitingForEntUpdate
 
     if connection in aWaitingForEntUpdate:
@@ -59,5 +59,5 @@ def HandlePacket(connection, packet, fromClient):
 
 aHandlers[ActionPacket.pID] = HandleActionPacket
 aHandlers[VersionPacket.pID] = HandleVersionPacket
-aHandlers[EntityUpdatePacket.pID] = HandleEntityUpdatePacket
+aHandlers[CreatureUpdatePacket.pID] = HandleCreatureUpdatePacket
 

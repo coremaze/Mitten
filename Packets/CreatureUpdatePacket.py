@@ -98,7 +98,7 @@ DELTA_TYPES = [
 ]
 assert(len(DELTA_TYPES) == 48)
 
-class EntityUpdatePacket(Packet):
+class CreatureUpdatePacket(Packet):
     pID = 0x0
     def __init__(self, entity_id = 0, fields = {}):
         self.entity_id = entity_id
@@ -128,11 +128,11 @@ class EntityUpdatePacket(Packet):
             # c-string, split by first null and decode from bytes.
             fields['name'] = fields['name'].split(b'\x00')[0].decode()
 
-        return EntityUpdatePacket(entity_id, fields)
+        return CreatureUpdatePacket(entity_id, fields)
 
     def Export(self, toServer):
         packetByteList = []
-        packetByteList.append( struct.pack('<I', EntityUpdatePacket.pID) )
+        packetByteList.append( struct.pack('<I', CreatureUpdatePacket.pID) )
 
         # Export the masked data / creature delta
         bitfield = 0
