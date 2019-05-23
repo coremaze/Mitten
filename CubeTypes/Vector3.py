@@ -15,3 +15,7 @@ class Vector3():
         raise NotImplemented('Method not implemented.')
     def Copy(self):
         return self.__class__(self.x, self.y, self.z)
+    def Set(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
