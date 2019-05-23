@@ -12,7 +12,7 @@ class Appearance():
                  hairBlue = 0,
                  notUsed3 = 0,
                  flags = 0,
-                 scale = FloatVector3(),
+                 scale = FloatVector3(1.0, 1.0, 1.0),
                  headModel = 0,
                  hairModel = 0,
                  handModel = 0,
