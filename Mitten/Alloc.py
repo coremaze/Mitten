@@ -1,12 +1,12 @@
 class IDContainer():
-    MIN_ID = 0x20000000000 #This is deliberately above the range GUID Fix can provide
-    def __init__(self):
+    def __init__(self, minID):
         self.busy = False
         self._USED_IDS = []
+        self.minID = minID
     def GetID(self):
         while self.busy: pass
         self.busy = True
-        i = self.MIN_ID
+        i = self.minID
         while True:
             if i not in self._USED_IDS:
                 self._USED_IDS.append(i)
@@ -21,10 +21,10 @@ class IDContainer():
             self._USED_IDS.remove(ID)
         self.busy = False
             
-idContainer = IDContainer()
+GUIDContainer = IDContainer(0x20000000000) #This is deliberately above the range GUID Fix can provide
 
-def GetID():
-    return idContainer.GetID()
+def GetGUID():
+    return GUIDContainer.GetID()
 
-def FreeID(ID):
-    return idContainer.FreeID(ID)
+def FreeGUID(ID):
+    return GUIDContainer.FreeID(ID)
