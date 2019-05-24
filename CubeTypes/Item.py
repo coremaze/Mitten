@@ -16,8 +16,11 @@ class Item():
                  unkByte = 0,
                  level = 0,
                  unkShort2 = 0,
-                 spirits = [Spirit() for _ in range(32)],
+                 spirits = None,
                  numSpirits = 0):
+
+        if spirits is None: spirits = [Spirit() for _ in range(32)]
+        
         self.itemType = itemType
         self.subType = subType
         self.unkShort1 = unkShort1

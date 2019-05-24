@@ -5,8 +5,8 @@ import struct
 class Particle():
     size = 72
     def __init__(self,
-                 position = LongVector3(),
-                 acceleration = FloatVector3(),
+                 position = None,
+                 acceleration = None,
                  red = 0,
                  green = 0,
                  blue = 0,
@@ -16,6 +16,10 @@ class Particle():
                  _type = 0,
                  spreading = 0,
                  unkInt = 0):
+
+        if position is None: position = LongVector3()
+        if acceleration is None: acceleration = FloatVector3()
+        
         self.position = position
         self.acceleration = acceleration
         self.red = red

@@ -4,7 +4,8 @@ from .Packet import Packet
 from CubeTypes import Creature
 class JoinPacket(Packet):
     pID = 0x10
-    def __init__(self, unknown = 0, creatureID = 0, creature = Creature()):
+    def __init__(self, unknown = 0, creatureID = 0, creature = None):
+        if creature is None: creature = Creature()
         self.unknown = unknown
         self.creatureID = creatureID
         self.creature = creature

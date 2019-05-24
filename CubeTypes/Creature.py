@@ -10,11 +10,11 @@ from CubeTypes.StatMultipliers import StatMultipliers
 class Creature():
     size = 0x1168
     def __init__(self,
-                 position = LongVector3(),
-                 orientation = FloatVector3(),
-                 velocity = FloatVector3(),
-                 acceleration = FloatVector3(),
-                 retreat = FloatVector3(),
+                 position = None,
+                 orientation = None,
+                 velocity = None,
+                 acceleration = None,
+                 retreat = None,
                  headRotation = 0.0,
                  physicsFlags = 0,
                  hostility = 0,
@@ -29,7 +29,7 @@ class Creature():
                  modeTimer = 0,
                  combo = 0,
                  lastHitTime = 0,
-                 appearance = Appearance(),
+                 appearance = None,
                  creatureFlags = 0,
                  unusedByte7 = 0,
                  unusedByte8 = 0,
@@ -44,13 +44,13 @@ class Creature():
                  unusedByte9 = 0,
                  unusedByte10 = 0,
                  chargedMP = 0.0,
-                 unkIntVec1 = IntVector3(),
-                 unkIntVec2 = IntVector3(),
-                 rayHit = FloatVector3(),
+                 unkIntVec1 = None,
+                 unkIntVec2 = None,
+                 rayHit = None,
                  HP = 0.0,
                  MP = 0.0,
                  blockPower = 0.0,
-                 statMultipliers = StatMultipliers(),
+                 statMultipliers = None,
                  unkByte1 = 0,
                  unkByte2 = 0,
                  unusedByte11 = 0,
@@ -64,19 +64,36 @@ class Creature():
                  unusedByte14 = 0,
                  unusedByte15 = 0,
                  unkInt1 = 0,
-                 superWeird = IntVector3(),
+                 superWeird = None,
                  unkInt2 = 0,
-                 spawnPosition = LongVector3(),
-                 unkIntVec3 = IntVector3(),
-                 unkByte3 = 0, 
+                 spawnPosition = None,
+                 unkIntVec3 = None,
+                 unkByte3 = 0,
                  unusedByte16 = 0,
                  unusedByte17 = 0,
                  unusedByte18 = 0,
-                 consumable = Item(),
-                 equipment = Equipment(),
+                 consumable = None,
+                 equipment = None,
                  skills = [0]*11,
                  manaCubes = 0,
                  name = ''):
+
+        if position is None: position = LongVector3()
+        if orientation is None: orientation = FloatVector3()
+        if velocity is None: velocity = FloatVector3()
+        if acceleration is None: acceleration = FloatVector3()
+        if retreat is None: retreat = FloatVector3()
+        if appearance is None: appearance = Appearance()
+        if unkIntVec1 is None: unkIntVec1 = IntVector3()
+        if unkIntVec2 is None: unkIntVec2 = IntVector3()
+        if rayHit is None: rayHit = FloatVector3()
+        if statMultipliers is None: statMultipliers = StatMultipliers()
+        if superWeird is None: superWeird = IntVector3()
+        if spawnPosition is None: spawnPosition = LongVector3()
+        if unkIntVec3 is None: unkIntVec3 = IntVector3()
+        if consumable is None: consumable = Item()
+        if equipment is None: equipment = Equipment()
+        
         self.position = position
         self.orientation = orientation
         self.velocity = velocity

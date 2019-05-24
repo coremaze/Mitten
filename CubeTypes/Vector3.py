@@ -19,3 +19,13 @@ class Vector3():
         self.x = x
         self.y = y
         self.z = z
+    def __add__(self, other):
+        return self.__class__(self.x+other.x, self.y+other.y, self.z+other.z)
+    def __sub__(self, other):
+        return self.__class__(self.x-other.x, self.y-other.y, self.z-other.z)
+    def MagnitudeSquared(self):
+        return self.x**2 + self.y**2 + self.z**2
+    def Magnitude(self):
+        return math.sqrt(self.MagnitudeSquared())
+    def __str__(self):
+        return f'<{self.x}, {self.y}, {self.z}>'

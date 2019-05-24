@@ -12,7 +12,7 @@ class Appearance():
                  hairBlue = 0,
                  notUsed3 = 0,
                  flags = 0,
-                 scale = FloatVector3(1.0, 1.0, 1.0),
+                 scale = None,
                  headModel = 0,
                  hairModel = 0,
                  handModel = 0,
@@ -21,15 +21,15 @@ class Appearance():
                  tailModel = 0,
                  shoulder2Model = 0,
                  wingModel = 0,
-                 headScale = 0.0,
-                 bodyScale = 0.0,
-                 handScale = 0.0,
-                 footScale = 0.0,
-                 shoulder2Scale = 0.0,
-                 weaponScale = 0.0,
-                 tailScale = 0.0,
-                 shoulderScale = 0.0,
-                 wingScale = 0.0,
+                 headScale = 1.0,
+                 bodyScale = 1.0,
+                 handScale = 1.0,
+                 footScale = 1.0,
+                 shoulder2Scale = 1.0,
+                 weaponScale = 1.0,
+                 tailScale = 1.0,
+                 shoulderScale = 1.0,
+                 wingScale = 1.0,
                  bodyRotation = 0.0,
                  armPitch = 0.0,
                  armRoll = 0.0,
@@ -37,12 +37,22 @@ class Appearance():
                  feetPitch = 0.0,
                  wingPitch = 0.0,
                  backPitch = 0.0,
-                 bodyOffset = FloatVector3(),
-                 headOffset = FloatVector3(),
-                 handOffset = FloatVector3(),
-                 footOffset = FloatVector3(),
-                 tailOffset = FloatVector3(),
-                 wingOffset = FloatVector3()):
+                 bodyOffset = None,
+                 headOffset = None,
+                 handOffset = None,
+                 footOffset = None,
+                 tailOffset = None,
+                 wingOffset = None):
+
+        if scale is None: scale = FloatVector3(1.0, 1.0, 1.0)
+        if bodyOffset is None: bodyOffset = FloatVector3()
+        if headOffset is None: headOffset = FloatVector3()
+        if handOffset is None: handOffset = FloatVector3()
+        if footOffset is None: footOffset = FloatVector3()
+        if tailOffset is None: tailOffset = FloatVector3()
+        if wingOffset is None: wingOffset = FloatVector3()
+
+        
         self.notUsed1 = notUsed1
         self.notUsed2 = notUsed2
         self.hairRed = hairRed

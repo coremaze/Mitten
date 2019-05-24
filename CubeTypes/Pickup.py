@@ -3,7 +3,10 @@ from CubeTypes import Item
 
 class Pickup():
     size = 288
-    def __init__(self, guid = 0, item = Item()):
+    def __init__(self, guid = 0, item = None):
+
+        if item is None: item = Item()
+        
         self.guid = guid
         self.item = item
     @staticmethod

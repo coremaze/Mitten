@@ -4,10 +4,13 @@ import struct
 class Sound():
     size = 24
     def __init__(self,
-                 position = FloatVector3(0,0,0),
+                 position = None,
                  ID = 0,
                  pitch = 0.0,
                  volume = 0.0):
+
+        if position is None: position = FloatVector3()
+        
         self.position = position
         self.ID = ID
         self.pitch = pitch

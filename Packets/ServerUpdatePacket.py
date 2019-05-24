@@ -7,19 +7,34 @@ import zlib
 class ServerUpdatePacket(Packet):
     pID = 0x4
     def __init__(self,
-                 blocks = [],
-                 hits = [],
-                 particles = [],
-                 sounds = [],
-                 projectiles = [],
-                 staticEntities = [],
-                 zoneItems = {},
-                 zoneDiscoveries = {},
-                 pickups = [],
-                 kills = [],
-                 damages = [],
-                 passiveProcs = [],
-                 missions = []):
+                 blocks = None,
+                 hits = None,
+                 particles = None,
+                 sounds = None,
+                 projectiles = None,
+                 staticEntities = None,
+                 zoneItems = None,
+                 zoneDiscoveries = None,
+                 pickups = None,
+                 kills = None,
+                 damages = None,
+                 passiveProcs = None,
+                 missions = None):
+
+        if blocks is None: blocks = []
+        if hits is None: hits = []
+        if particles is None: particles = []
+        if sounds is None: sounds = []
+        if projectiles is None: projectiles = []
+        if staticEntities is None: staticEntities = []
+        if zoneItems is None: zoneItems = {}
+        if zoneDiscoveries is None: zoneDiscoveries = {}
+        if pickups is None: pickups = []
+        if kills is None: kills = []
+        if damages is None: damages = []
+        if passiveProcs is None: passiveProcs = []
+        if missions is None: missions = []
+                
         self.blocks = blocks
         self.hits = hits
         self.particles = particles

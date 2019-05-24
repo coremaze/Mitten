@@ -10,11 +10,11 @@ class Projectile():
                  zoneY = 0,
                  unknownInt1 = 0,
                  unknownInt2 = 0,
-                 position = LongVector3(0,0,0),
+                 position = None,
                  unknownInt3 = 0,
                  unknownInt4 = 0,
                  unknownInt5 = 0,
-                 velocity = FloatVector3(0,0,0),
+                 velocity = None,
                  legacyDamage = 0.0,
                  unknownFloat1 = 0.0,
                  scale = 0.0,
@@ -25,6 +25,10 @@ class Projectile():
                  unknownInt6 = 0,
                  unknownInt7 = 0,
                  unknownInt8 = 0):
+
+        if position is None: position = LongVector3()
+        if velocity is None: velocity = FloatVector3()
+        
         self.creatureID = creatureID
         self.zoneX = zoneX
         self.zoneY = zoneY

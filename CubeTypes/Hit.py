@@ -12,12 +12,16 @@ class Hit():
                  isCrit = 0,
                  stunDur = 0,
                  unkInt = 0,
-                 hitPos = LongVector3(0,0,0),
-                 hitDir = FloatVector3(0.0,0.0,0.0),
+                 hitPos = None,
+                 hitDir = None,
                  isYellow = False,
                  hitType = 0,
                  showLight = False,
                  unkByte = 0):
+
+        if hitPos is None: hitPos = LongVector3()
+        if hitDir is None: hitDir = FloatVector3()
+        
         self.attackerID = attackerID
         self.targetID   = targetID
         self.dmg        = dmg

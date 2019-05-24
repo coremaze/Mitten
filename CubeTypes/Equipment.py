@@ -3,19 +3,34 @@ from CubeTypes.Item import Item
 class Equipment():
     size = Item.size*13
     def __init__(self,
-                 unkItem1 = Item(),
-                 necklace = Item(),
-                 chest = Item(),
-                 feet = Item(),
-                 hands = Item(),
-                 shoulder = Item(),
-                 leftWeapon = Item(),
-                 rightWeapon = Item(),
-                 leftRing = Item(),
-                 rightRing = Item(),
-                 light = Item(),
-                 special = Item(),
-                 pet = Item()):
+                 unkItem1 = None,
+                 necklace = None,
+                 chest = None,
+                 feet = None,
+                 hands = None,
+                 shoulder = None,
+                 leftWeapon = None,
+                 rightWeapon = None,
+                 leftRing = None,
+                 rightRing = None,
+                 light = None,
+                 special = None,
+                 pet = None):
+
+        if unkItem1 is None: unkItem1 = Item()
+        if necklace is None: necklace = Item()
+        if chest is None: chest = Item()
+        if feet is None: feet = Item()
+        if hands is None: hands = Item()
+        if shoulder is None: shoulder = Item()
+        if leftWeapon is None: leftWeapon = Item()
+        if rightWeapon is None: rightWeapon = Item()
+        if leftRing is None: leftRing = Item()
+        if rightRing is None: rightRing = Item()
+        if light is None: light = Item()
+        if special is None: special = Item()
+        if pet is None: pet = Item()
+        
         self.unkItem1 = unkItem1
         self.necklace = necklace
         self.chest = chest

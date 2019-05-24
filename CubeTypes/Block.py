@@ -4,12 +4,15 @@ import struct
 class Block():
     size = 20
     def __init__(self,
-                 position = IntVector3(0,0,0),
+                 position = None,
                  red = 0,
                  green = 0,
                  blue = 0,
                  _type = 0,
                  unkInt = 0):
+
+        if position is None: position = IntVector3(0,0,0)
+        
         self.position = position
         self.red = red
         self.green = green

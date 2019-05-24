@@ -5,7 +5,7 @@ from CubeTypes.Item import Item
 class ActionPacket(Packet):
     pID = 0x6
     def __init__(self,
-                 item = Item(),
+                 item = None,
                  zoneX = 0,
                  zoneY = 0,
                  index = 0,
@@ -13,6 +13,9 @@ class ActionPacket(Packet):
                  interactionType = 0,
                  unkByte = 0,
                  unkShort = 0):
+
+        if item is None: item = Item()
+        
         self.item = item
         self.zoneX = zoneX
         self.zoneY = zoneY

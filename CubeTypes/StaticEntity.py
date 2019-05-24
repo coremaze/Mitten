@@ -11,14 +11,18 @@ class StaticEntity():
                  unknownInt1 = 0,
                  _type = 0,
                  unknownInt2 = 0,
-                 position = LongVector3(0,0,0),
+                 position = None,
                  rotation = 0,
-                 scale = FloatVector3(0.0,0.0,0.0),
+                 scale = None,
                  closed = 0,
                  time = 0,
                  unknownInt3 = 0,
                  unknownInt4 = 0,
                  user = 0):
+
+        if position is None: position = LongVector3()
+        if scale is None: scale = FloatVector3()
+        
         self.zoneX = zoneX
         self.zoneY = zoneY
         self.ID = ID

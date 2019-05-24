@@ -9,15 +9,21 @@ class Airship():
                  ID = 0,
                  unkInt1 = 0,
                  unkInt2 = 0,
-                 position = LongVector3(),
-                 velocity = FloatVector3(),
+                 position = None,
+                 velocity = None,
                  rotation = 0.0,
-                 station = LongVector3(),
+                 station = None,
                  pathRotation = 0.0,
                  unkInt3 = 0,
-                 destination = LongVector3(),
+                 destination = None,
                  flightState = 0,
                  unkInt4 = 0):
+        
+        if position is None: position = LongVector3()
+        if velocity is None: velocity = FloatVector3()
+        if station is None: station = LongVector3()
+        if destination is None: destination = LongVector3()
+        
         self.ID = ID
         self.unkInt1 = unkInt1
         self.unkInt2 = unkInt2
