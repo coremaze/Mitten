@@ -6,11 +6,6 @@ from Packets.CreatureUpdatePacket import DELTA_TYPES
 from CubeTypes import *
 from threading import Thread
 
-BLOCK_SCALE = 0x10000
-ZONE_SCALE = BLOCK_SCALE * 256
-REGION_SCALE = ZONE_SCALE * 64
-MISSION_SCALE = REGION_SCALE // 8
-
 import math
 import time
 import random
@@ -211,12 +206,12 @@ class KingOfTheHill():
         print(f"King of the hill mode activated at {position}")
         self.eventLocation = position.Copy()
         self.eventEntity = UpdateCreature(GetGUID())
-        self.eventEntity.fields['hostility'] = 0 #2
+        self.eventEntity.fields['hostility'] = FRIENDLY_PLAYER_TYPE #2
         self.eventEntity.fields['appearance'] = Appearance()
-        self.eventEntity.fields['appearance'].flags = 1<<8
+        self.eventEntity.fields['appearance'].flags = IMMOVABLE_FLAG
         self.eventEntity.fields['appearance'].scale.Set(3.0, 3.0, 4.0)
-        self.eventEntity.fields['appearance'].bodyModel = 2565
-        self.eventEntity.fields['appearance'].headModel = 2470
+        self.eventEntity.fields['appearance'].bodyModel = MODEL_IDS['obelisk']
+        self.eventEntity.fields['appearance'].headModel = MODEL_IDS['crest1']
         self.eventEntity.fields['appearance'].hairModel = 0xFFFF
         self.eventEntity.fields['appearance'].headScale = 0.0
         self.eventEntity.fields['appearance'].handScale = 0.0
@@ -243,29 +238,29 @@ class KingOfTheHill():
         # HitPacket will grant xp
         if self.eventDummy is None:
             self.eventDummy = UpdateCreature(GetGUID())
-            self.eventDummy.fields['hostility'] = 1
+            self.eventDummy.fields['hostility'] = HOSTILE_TYPE
             self.eventDummy.fields['position'] = LongVector3(0, 0, 65536*10) + self.eventEntity.fields['position']
             self.eventDummy.fields['spawnPosition'] = self.eventEntity.fields['position']
             self.eventDummy.fields['HP'] = 10000000000
             self.eventDummy.fields['powerBase'] = 1
             self.eventDummy.fields['name'] = 'KOTHDummy!'
             self.eventDummy.fields['appearance'] = Appearance()
-            self.eventDummy.fields['appearance'].flags = 1<<8
+            self.eventDummy.fields['appearance'].flags = IMMOVABLE_FLAG
             self.eventDummy.fields['appearance'].scale.Set(0.0, 0.0, 0.0)
             self.eventDummy.fields['equipment'] = Equipment()
-            lamp = Item(itemType = 24, rarity=3)
+            lamp = Item(itemType = 24, rarity=2)
             self.eventDummy.fields['equipment'].light = lamp
-            self.eventDummy.fields['creatureFlags'] = 0xFFFF
+            self.eventDummy.fields['creatureFlags'] = LANTERN_FLAG
             
 
         radius_ents = 10
         for i in range(radius_ents):
             radius = UpdateCreature(GetGUID())
-            radius.fields['hostility'] = 2
+            radius.fields['hostility'] = DUMMY_TYPE
             radius.fields['creatureType'] = 136
             radius.fields['appearance'] = Appearance()
-            radius.fields['appearance'].scale.Set(1.0, 0.0, 0.0) 
-            radius.fields['appearance'].bodyModel = 2475
+            radius.fields['appearance'].scale.Set(1.0, 0.0, 0.2) 
+            radius.fields['appearance'].bodyModel = MODEL_IDS['torch-blue']
             radius.fields['appearance'].headScale = 0.0
             radius.fields['appearance'].handScale = 0.0
             radius.fields['appearance'].footScale = 0.0
@@ -274,8 +269,7 @@ class KingOfTheHill():
             radius.fields['appearance'].tailScale = 0.0
             radius.fields['appearance'].shoulderScale = 0.0
             radius.fields['appearance'].wingScale = 0.0
-            radius.fields['appearance'].bodyOffset.Set(0.0, 5.0, 10.0)
-            radius.fields['equipment'] = Equipment()
+            radius.fields['appearance'].bodyOffset.Set(0.0, 5.0, 8.0)
             radius.fields['level'] = 2**31 -1
             radius.fields['powerBase'] = 0
             radius.fields['name'] = 'King ofthe Hill'
@@ -560,11 +554,13 @@ def HandleCreatureUpdate(connection, packet, fromClient):
             player.SendRadiusUpdate()
             player.SendDummyUpdate()
         player.fields.update(packet.fields)
-    else:
+
         if packet.entity_id in [x.guid for x in koth.players]:
-            if 'hostility' in packet.fields:
-                packet.fields['hostility'] = 1
+            #turn on friendly fire for players
+            if 'creatureFlags' in packet.fields:
+                packet.fields['creatureFlags'] |= HOSTILE_FLAG
                 return MODIFY
+
 
 def HandleCreatureUpdateFinished(connection, packet, fromClient):
     player = koth.GetPlayerByConnection(connection)

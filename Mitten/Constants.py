@@ -3600,4 +3600,5 @@ MATERIAL_NAMES = {
 End of constants.py
 '''
 
+DUMMY_TYPE = TARGET_TYPE
 MATERIAL_IDS = {v: k for k, v in MATERIAL_NAMES.items()}
