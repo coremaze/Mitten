@@ -42,7 +42,7 @@ def LoadPlugin(plugin):
 def GetAttribute(plugin, attribute, default=None):
     string = PluginName(plugin)
     if attribute not in CONFIG[string]:
-        CONFIG[string][attribute] = default
+        SetAttribute(plugin, attribute, default)
     return CONFIG[string][attribute]
 
 def SetAttribute(plugin, attribute, value):
