@@ -1,6 +1,7 @@
 from Mitten.Events import *
 from Mitten.Constants import *
 from Mitten.Alloc import *
+from Mitten import Configs
 from Packets import *
 from Packets.CreatureUpdatePacket import DELTA_TYPES
 from CubeTypes import *
@@ -10,6 +11,12 @@ import math
 import time
 import random
 
+'''
+This plugin is a port of King of the hill by Sarcen
+https://github.com/matpow2/cuwo-scripts/blob/master/koth/scripts/kingofthehill.py
+'''
+
+PLUGIN = __name__.split('.')[-1]
 
 REWARD_WEAPONS = dict({
     # Weapons
@@ -174,26 +181,27 @@ class KingOfTheHill():
         self.eventEntity = None
         self.eventDummy = None
         self.radii = []
-        self.proximity_radius = 1700000 ** 2
+        self.proximityRadius = Configs.GetAttribute(PLUGIN, 'proximityRadius', 1700000 ** 2)
+        self.numRadiusMarkers = Configs.GetAttribute(PLUGIN, 'numRadiusMarkers', 10)
         self.mission = None
         self.lastTick = 0
         self.tickFrequency = 5.0
         self.playersInProximity = []
         self.king = None
         self.kingStart = 0
-        self.XPPerTick = 0
-        self.kingXPBonus = 10
-        self.kingPointsPerTick = 500 #0
-        self.pointsPerTick = 100 #0
-        self.rewardPoints = 10000
+        self.XPPerTick = Configs.GetAttribute(PLUGIN, 'XPPerTick', 0)
+        self.kingXPBonus = Configs.GetAttribute(PLUGIN, 'kingXPBonus', 10)
+        self.kingPointsPerTick = Configs.GetAttribute(PLUGIN, 'kingPointsPerTick', 500) #0
+        self.pointsPerTick = Configs.GetAttribute(PLUGIN, 'pointsPerTick', 100) #0
+        self.rewardPoints = Configs.GetAttribute(PLUGIN, 'rewardPoints', 10000)
         self.chatGUID = GetGUID()
-        self.maxLevel = 0
-        self.copperPerTick = 10 #0
-        self.itemDropRadius = 1000000
-        self.killKingPoints = 500
-        self.killPoints = 100
-        self.killKingXP = 100
-        self.killXP = 50
+        self.maxLevel = Configs.GetAttribute(PLUGIN, 'maxLevel', 0)
+        self.copperPerTick = Configs.GetAttribute(PLUGIN, 'copperPerTick', 0)
+        self.itemDropRadius = Configs.GetAttribute(PLUGIN, 'itemDropRadius', 1000000)
+        self.killKingPoints = Configs.GetAttribute(PLUGIN, 'killKingPoints', 500)
+        self.killPoints = Configs.GetAttribute(PLUGIN, 'killPoints', 100)
+        self.killKingXP = Configs.GetAttribute(PLUGIN, 'killKingXP', 100)
+        self.killXP = Configs.GetAttribute(PLUGIN, 'killXP', 50)
 
     def GetPlayerByConnection(self, connection):
         matches = [x for x in self.players if x.connection is connection]
@@ -248,12 +256,12 @@ class KingOfTheHill():
             self.eventDummy.fields['appearance'].flags = IMMOVABLE_FLAG
             self.eventDummy.fields['appearance'].scale.Set(0.0, 0.0, 0.0)
             self.eventDummy.fields['equipment'] = Equipment()
-            lamp = Item(itemType = 24, rarity=2)
+            lamp = Item(itemType = 24, rarity=3)
             self.eventDummy.fields['equipment'].light = lamp
             self.eventDummy.fields['creatureFlags'] = LANTERN_FLAG
             
 
-        radius_ents = 10
+        radius_ents = self.numRadiusMarkers
         for i in range(radius_ents):
             radius = UpdateCreature(GetGUID())
             radius.fields['hostility'] = DUMMY_TYPE
@@ -278,9 +286,9 @@ class KingOfTheHill():
             radius.fields['HP'] = 10000000000
 
             r = math.pi * 2 / radius_ents * i
-            x = math.sqrt(self.proximity_radius) * math.sin(r)
-            y = math.sqrt(self.proximity_radius) * math.cos(r)
-            radius.fields['position'] = LongVector3(int(x), int(y), 65536*5) + self.eventEntity.fields['position']
+            x = math.sqrt(self.proximityRadius) * math.sin(r)
+            y = math.sqrt(self.proximityRadius) * math.cos(r)
+            radius.fields['position'] = LongVector3(int(x), int(y), BLOCK_SCALE*15) + self.eventEntity.fields['position']
             self.radii.append(radius)
             
 
@@ -337,7 +345,7 @@ class KingOfTheHill():
             if 'position' not in player.fields: continue
             distance = (self.eventLocation - player.fields['position']).MagnitudeSquared()
 
-            if distance < self.proximity_radius and player.fields['HP'] > 0:
+            if distance < self.proximityRadius and player.fields['HP'] > 0:
                 if player not in self.playersInProximity:
                     self.playersInProximity.append(player)
             elif player in self.playersInProximity:
@@ -403,6 +411,7 @@ class KingOfTheHill():
 
 
     def DropGold(self, amount):
+        if amount <= 0: return
         for material, coinScale in ((11, 10000), (12, 100), (10, 1)):
             item = Item()
             item.itemType = 12 #coin
@@ -412,29 +421,29 @@ class KingOfTheHill():
             amount = int(math.fmod(amount, coinScale))
             self.DropItem(item)
 
-    def DropItem(self, item): pass
-##        position = self.eventLocation.Copy()
-##
-##        d = random.uniform(0, 1) * math.pi * 2
-##        r = math.sqrt(random.uniform(0, 1)) * self.itemDropRadius
-##        position.x += int(math.cos(d) * r)
-##        position.y += int(math.sin(d) * r)
-##
-##        drop = Drop()
-##        drop.item = item
-##        drop.scale = 1.0
-##        drop.position = position
-##
-##        zoneX, zoneY = drop.position.x // ZONE_SCALE, drop.position.y // ZONE_SCALE
-##
-##        zoneItems = {(zoneX, zoneY):[drop]}
-##
-##        update = ServerUpdatePacket()
-##        update.zoneItems = zoneItems
-##
-##        for player in self.players:
-##            print('Dropping', drop)
-##            Thread(target=update.Send, args=[player.connection, False]).start()
+    def DropItem(self, item): 
+        position = self.eventLocation.Copy()
+
+        d = random.uniform(0, 1) * math.pi * 2
+        r = math.sqrt(random.uniform(0, 1)) * self.itemDropRadius
+        position.x += int(math.cos(d) * r)
+        position.y += int(math.sin(d) * r)
+
+        drop = Drop()
+        drop.item = item
+        drop.scale = 1.0
+        drop.position = position
+
+        zoneX, zoneY = drop.position.x // ZONE_SCALE, drop.position.y // ZONE_SCALE
+
+        zoneItems = {(zoneX, zoneY):[drop]}
+
+        update = ServerUpdatePacket()
+        update.zoneItems = zoneItems
+
+        for player in self.players:
+            print('Dropping', drop)
+            Thread(target=update.Send, args=[player.connection, False]).start()
 
 
 
