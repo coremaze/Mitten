@@ -88,6 +88,8 @@ class Player(UpdateCreature):
         self.new = True
         self.points = 0
         self.rewardPoints = 0
+        self.dead = False
+        self.announced = False
 
     def OnJoin(self):
         self.SendEventEntityUpdate()
@@ -153,7 +155,6 @@ class Player(UpdateCreature):
         Thread(target=ChatPacket(message, koth.chatGUID).Send, args=[self.connection, False]).start()
 
     def OnKill(self, otherPlayer):
-        print(otherPlayer)
         if koth.king is None:
             return
 
@@ -215,7 +216,8 @@ class KingOfTheHill():
         self.eventEntity.fields['appearance'].flags = 1<<8
         self.eventEntity.fields['appearance'].scale.Set(3.0, 3.0, 4.0)
         self.eventEntity.fields['appearance'].bodyModel = 2565
-        self.eventEntity.fields['appearance'].headModel = 2565
+        self.eventEntity.fields['appearance'].headModel = 2470
+        self.eventEntity.fields['appearance'].hairModel = 0xFFFF
         self.eventEntity.fields['appearance'].headScale = 0.0
         self.eventEntity.fields['appearance'].handScale = 0.0
         self.eventEntity.fields['appearance'].footScale = 0.0
@@ -242,14 +244,18 @@ class KingOfTheHill():
         if self.eventDummy is None:
             self.eventDummy = UpdateCreature(GetGUID())
             self.eventDummy.fields['hostility'] = 1
-            self.eventDummy.fields['position'] = LongVector3(0, 0, 100000000) + self.eventEntity.fields['position']
+            self.eventDummy.fields['position'] = LongVector3(0, 0, 65536*10) + self.eventEntity.fields['position']
             self.eventDummy.fields['spawnPosition'] = self.eventEntity.fields['position']
             self.eventDummy.fields['HP'] = 10000000000
             self.eventDummy.fields['powerBase'] = 1
             self.eventDummy.fields['name'] = 'KOTHDummy!'
             self.eventDummy.fields['appearance'] = Appearance()
             self.eventDummy.fields['appearance'].flags = 1<<8
-            self.eventDummy.fields['appearance'].scale.Set(0.0, 0.0, 0.0) 
+            self.eventDummy.fields['appearance'].scale.Set(0.0, 0.0, 0.0)
+            self.eventDummy.fields['equipment'] = Equipment()
+            lamp = Item(itemType = 24, rarity=3)
+            self.eventDummy.fields['equipment'].light = lamp
+            self.eventDummy.fields['creatureFlags'] = 0xFFFF
             
 
         radius_ents = 10
@@ -317,8 +323,12 @@ class KingOfTheHill():
             if killers and killeds:
                 killer = killers[0]
                 killed = killeds[0]
-                if hit.dmg > killed.fields['HP']:
+                if hit.dmg >= killed.fields['HP'] and not killed.dead:
+                    killed.dead = True
                     killer.OnKill(killed)
+##                else:
+##                    print(hit.dmg, killed.fields['HP'], killed.dead)
+        return MODIFY
 
     def DoProximityCheck(self):
         bad_items = []
@@ -330,6 +340,7 @@ class KingOfTheHill():
             self.playersInProximity.remove(player)
 
         for player in self.players:
+            if 'position' not in player.fields: continue
             distance = (self.eventLocation - player.fields['position']).MagnitudeSquared()
 
             if distance < self.proximity_radius and player.fields['HP'] > 0:
@@ -490,9 +501,13 @@ class KingOfTheHill():
         materials = itemdict[item_key]
         item.material = materials[random.randint(0, len(materials) - 1)]
         return item
-            
 
-        
+    def AnnounceJoin(self, name):
+        message = f'{name} has joined.'
+        chat = ChatPacket(message, self.chatGUID)
+        for player in self.players:
+            Thread(target=chat.Send, args=[player.connection, False]).start()
+             
 koth = KingOfTheHill()
 
 @Handle(OnConnect)
@@ -524,14 +539,21 @@ def HandleChat(connection, packet, fromClient):
     player = koth.GetPlayerByConnection(connection)
     if packet.message.lower() == '!kothstart':
         koth.Start(player.fields['position'])
+        
 def HandleJoin(connection, packet, fromClient):
     player = koth.GetPlayerByConnection(connection)
     player.guid = packet.creatureID
 
-
 def HandleCreatureUpdate(connection, packet, fromClient):
     if fromClient:
         player = koth.GetPlayerByConnection(connection)
+        if 'HP' in packet.fields:
+            if packet.fields['HP'] > 0.0:
+                player.dead = False
+
+        if 'name' in packet.fields:
+            koth.AnnounceJoin(packet.fields['name'])
+                
         if player.new:
             player.new = False
             player.SendEventEntityUpdate()
