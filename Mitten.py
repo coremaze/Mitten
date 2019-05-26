@@ -198,6 +198,8 @@ def MakeServerConnection(server):
     try:
         serverSock.connect(server)
     except ConnectionRefusedError:
+        if len(MITTEN_EVENTS[OnServerFailure]) == 0:
+            print("WARNING: Mitten failed to connect to the internal server, and there are no handlers for this.")
         for handler in MITTEN_EVENTS[OnServerFailure]:
             handler()
     return serverSock
