@@ -3441,6 +3441,7 @@ Retrieved from https://github.com/matpow2/cuwo/blob/master/cuwo/constants.py
 on May 25th, 2019
 
 Removed CHUNK_SCALE, MAX_CHUNK, and SECTOR_SCALE on May 25th, 2019.
+Moved HOSTILE_FLAG to be with the other creature flags on May 26th, 2019.
 '''
 # Copyright (c) Mathias Kaerlev 2013-2017.
 #
@@ -3491,9 +3492,6 @@ SOLID_BLOCK = 1
 WATER_BLOCK = 2
 FLAT_WATER_BLOCK = 3
 
-# hostile constants
-HOSTILE_FLAG = 1 << 5
-
 FRIENDLY_PLAYER_TYPE = 0
 HOSTILE_TYPE = 1
 FRIENDLY_TYPE = 2 # also 4, 5
@@ -3506,6 +3504,7 @@ TARGET_TYPE = 6
 CLIMBING_FLAG = 1 << 0
 ATTACKING_FLAG = 1 << 2
 GLIDER_FLAG = 1 << 4
+HOSTILE_FLAG = 1 << 5
 LANTERN_FLAG = 1 << 9
 STEALTH_FLAG = 1 << 10
 
