@@ -20,3 +20,4 @@ from .Pickup import Pickup
 from .Kill import Kill
 from .Damage import Damage
 from .PassiveProc import PassiveProc
+from .Constants import *
