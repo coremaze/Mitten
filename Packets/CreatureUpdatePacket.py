@@ -86,7 +86,7 @@ DELTA_TYPES = [
     DeltaField('unkLong1', '<q'),
     DeltaField('powerBase', '<B'),
     DeltaField('unkInt1', '<i'),
-    DeltaField('superWeird', IntVector3), # Spawn chunk, need to rename
+    DeltaField('spawnZone', IntVector3), # Spawn chunk, need to rename
     DeltaField('spawnPosition', LongVector3),
     DeltaField('unkIntVec3', IntVector3),
     DeltaField('unkByte3', '<B'),
