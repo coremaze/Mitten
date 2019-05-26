@@ -39,11 +39,13 @@ def HandlePacket(connection, packet, fromClient):
 
 def HandleCreatureUpdate(connection, packet, fromClient):
     if fromClient:
+        #remember client position
         if 'position' in packet.fields:
             player = [x for x in PLAYERS if x.guid == packet.guid][0]
             player.SetPosition(packet.fields['position'])
     else:
         sourceGUID = packet.guid
+        #return if this is not a player
         if sourceGUID not in [x.guid for x in PLAYERS]:
             return
         sourcePlayer = [x for x in PLAYERS if x.guid == sourceGUID][0]
@@ -52,6 +54,7 @@ def HandleCreatureUpdate(connection, packet, fromClient):
         sourceLoc = sourcePlayer.position
         destLoc = destPlayer.position
 
+        #return if they are close to the player
         if sourceLoc.Dist(destLoc) <= BLOCK_SCALE * maxBlocksAway:
             return
         
