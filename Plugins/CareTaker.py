@@ -22,7 +22,7 @@ class CareTaker():
                     if process.exe() == self._exe:
                         return process
         except Exception as e:
-            print(f'[{PLUGIN}] Error in _GetRunningServer!'
+            print(f'[{PLUGIN}] Error in _GetRunningServer!\n'
                   f'* Error: {e}')
         return None
 
@@ -31,9 +31,9 @@ class CareTaker():
             os.chdir(self.path)
             os.startfile(self.exe)
         except Exception as e:
-            print(f'[{PLUGIN}] Could not start server!'
-                  f'* In directory: {self.path}'
-                  f'* Process: {self.processName}'
+            print(f'[{PLUGIN}] Could not start server!\n'
+                  f'* In directory: {self.path}\n'
+                  f'* Process: {self.processName}\n'
                   f'* Error: {e}')
             return
         print(f'[{PLUGIN}] Successfully started {self.processName}')
@@ -44,7 +44,7 @@ class CareTaker():
         try:
             serverProcess.kill()
         except Exception as e:
-            print(f'[{PLUGIN}] Could not kill server!'
+            print(f'[{PLUGIN}] Could not kill server!\n'
                   f'* Error: {e}')
 
     def RestartServer(self):
