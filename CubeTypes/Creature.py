@@ -64,7 +64,7 @@ class Creature():
                  unusedByte14 = 0,
                  unusedByte15 = 0,
                  unkInt1 = 0,
-                 superWeird = None,
+                 spawnZone = None,
                  unkInt2 = 0,
                  spawnPosition = None,
                  unkIntVec3 = None,
@@ -88,7 +88,7 @@ class Creature():
         if unkIntVec2 is None: unkIntVec2 = IntVector3()
         if rayHit is None: rayHit = FloatVector3()
         if statMultipliers is None: statMultipliers = StatMultipliers()
-        if superWeird is None: superWeird = IntVector3()
+        if spawnZone is None: spawnZone = IntVector3()
         if spawnPosition is None: spawnPosition = LongVector3()
         if unkIntVec3 is None: unkIntVec3 = IntVector3()
         if consumable is None: consumable = Item()
@@ -148,7 +148,7 @@ class Creature():
         self.unusedByte14 = unusedByte14
         self.unusedByte15 = unusedByte15
         self.unkInt1 = unkInt1
-        self.superWeird = superWeird
+        self.spawnZone = spawnZone
         self.unkInt2 = unkInt2
         self.spawnPosition = spawnPosition
         self.unkIntVec3 = unkIntVec3
@@ -218,7 +218,7 @@ class Creature():
         unusedByte14, = struct.unpack('<B', data.read(1))
         unusedByte15, = struct.unpack('<B', data.read(1))
         unkInt1, = struct.unpack('<i', data.read(4))
-        superWeird = IntVector3.Import(data)
+        spawnZone = IntVector3.Import(data)
         unkInt2, = struct.unpack('<i', data.read(4))
         spawnPosition = LongVector3.Import(data)
         unkIntVec3 = IntVector3.Import(data)
@@ -237,7 +237,7 @@ class Creature():
                  slowedTime, iceEffectTime, windEffectTime, showPatchTime, classType, specialization, unusedByte9,
                  unusedByte10, chargedMP, unkIntVec1, unkIntVec2, rayHit, HP, MP, blockPower, statMultipliers, unkByte1,
                  unkByte2, unusedByte11, unusedByte12, level, XP, parentOwner, unkLong1, powerBase, unusedByte13,
-                 unusedByte14, unusedByte15, unkInt1, superWeird, unkInt2, spawnPosition, unkIntVec3, unkByte3,
+                 unusedByte14, unusedByte15, unkInt1, spawnZone, unkInt2, spawnPosition, unkIntVec3, unkByte3,
                  unusedByte16, unusedByte17, unusedByte18, consumable, equipment, skills, manaCubes, name)
 
     def Export(self):
@@ -296,7 +296,7 @@ class Creature():
         dataList.append(struct.pack('<B', self.unusedByte14))
         dataList.append(struct.pack('<B', self.unusedByte15))
         dataList.append(struct.pack('<i', self.unkInt1))
-        dataList.append(self.superWeird.Export())
+        dataList.append(self.spawnZone.Export())
         dataList.append(struct.pack('<i', self.unkInt2))
         dataList.append(self.spawnPosition.Export())
         dataList.append(self.unkIntVec3.Export())

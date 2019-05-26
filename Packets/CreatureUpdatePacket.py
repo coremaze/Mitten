@@ -86,7 +86,7 @@ DELTA_TYPES = [
     DeltaField('unkLong1', '<q'),
     DeltaField('powerBase', '<B'),
     DeltaField('unkInt1', '<i'),
-    DeltaField('superWeird', IntVector3), # Spawn chunk, need to rename
+    DeltaField('spawnZone', IntVector3), # Spawn chunk, need to rename
     DeltaField('spawnPosition', LongVector3),
     DeltaField('unkIntVec3', IntVector3),
     DeltaField('unkByte3', '<B'),
@@ -100,8 +100,8 @@ assert(len(DELTA_TYPES) == 48)
 
 class CreatureUpdatePacket(Packet):
     pID = 0x0
-    def __init__(self, entity_id = 0, fields = {}):
-        self.entity_id = entity_id
+    def __init__(self, guid = 0, fields = {}):
+        self.guid = guid
         self.fields = fields
 
     @staticmethod
@@ -114,7 +114,7 @@ class CreatureUpdatePacket(Packet):
 
         # Read decompressed packet.
         rdr = io.BytesIO(zlib.decompress(zlibData))
-        entity_id, = struct.unpack('<q', rdr.read(8))
+        guid, = struct.unpack('<q', rdr.read(8))
         bitfield, = struct.unpack('<q', rdr.read(8))
 
         fields = {}
@@ -128,7 +128,7 @@ class CreatureUpdatePacket(Packet):
             # c-string, split by first null and decode from bytes.
             fields['name'] = fields['name'].split(b'\x00')[0].decode()
 
-        return CreatureUpdatePacket(entity_id, fields)
+        return CreatureUpdatePacket(guid, fields)
 
     def Export(self, toServer):
         packetByteList = []
@@ -154,7 +154,7 @@ class CreatureUpdatePacket(Packet):
                 t.Write(field_output, data)
 
         # Write the data to be compressed
-        deltaData = struct.pack('<q', self.entity_id)
+        deltaData = struct.pack('<q', self.guid)
         deltaData += struct.pack('<q', bitfield)
         deltaData += field_output.getbuffer()
         zlibData = zlib.compress(deltaData)

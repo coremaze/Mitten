@@ -10,7 +10,7 @@ import time
 DOTS_IN_BLOCK = 65536
 BLOCKS_IN_ZONE = 256
 
-latestEntities = {} # keyed by entity_id
+latestEntities = {} # keyed by guid
 players = {} # keyed by connection
 spawnPoint = None
 
@@ -69,22 +69,22 @@ def HandleCreatureUpdatePacket(connection, packet, fromClient):
                     player['teleport'] = None
                     # Now the client will think that _every_ entity has teleported to the GUID 0 entity,
                     # so we send the last known position for every we have.
-                    for entity_id, fields in list(latestEntities.items()):
-                        CreatureUpdatePacket(entity_id, {'position': fields['position']}).Send(connection, toServer=False)
+                    for guid, fields in list(latestEntities.items()):
+                        CreatureUpdatePacket(guid, {'position': fields['position']}).Send(connection, toServer=False)
 
     # from server
     else:
-        entity_id = packet.entity_id
+        guid = packet.guid
 
         # Block normal GUID 0 bug.
-        if entity_id == 0: return BLOCK
+        if guid == 0: return BLOCK
 
         # Save a local copy of the entites via their delta updates.
         # TODO(Andoryuuta): Find out when to delete these.
-        if entity_id in latestEntities:
-            latestEntities[entity_id].update(packet.fields)
+        if guid in latestEntities:
+            latestEntities[guid].update(packet.fields)
         else:
-            latestEntities[entity_id] = packet.fields
+            latestEntities[guid] = packet.fields
 
 
 def teleport(connection, x, y, z):

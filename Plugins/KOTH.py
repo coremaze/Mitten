@@ -564,7 +564,7 @@ def HandleCreatureUpdate(connection, packet, fromClient):
             player.SendDummyUpdate()
         player.fields.update(packet.fields)
 
-        if packet.entity_id in [x.guid for x in koth.players]:
+        if packet.guid in [x.guid for x in koth.players]:
             #turn on friendly fire for players
             if 'creatureFlags' in packet.fields:
                 packet.fields['creatureFlags'] |= HOSTILE_FLAG
