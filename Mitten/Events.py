@@ -15,7 +15,8 @@ class OnServerFailure():
     '''
     Triggered when the server refuses a connection.
 
-    serverSock: The socket which failed to establish a connection to the server.
+    sock: The socket which failed to establish a connection to the server.
+    server: A tuple with ('Server address' portNumber) of the internal server.
     '''
     pass
 
