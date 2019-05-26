@@ -59,7 +59,7 @@ caretaker = CareTaker(
     Configs.GetAttribute(PLUGIN, 'internalExecutableName', 'Server.exe'),
     Configs.GetAttribute(PLUGIN, 'internalExecutablePath', os.path.abspath(
         os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir)
-    )) + '\\\\'
+    )) + '\\'
 )
 
 @Handle(OnServerFailure)
