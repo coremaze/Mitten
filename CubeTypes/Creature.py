@@ -22,11 +22,11 @@ class Creature():
                  unusedByte2 = 0,
                  unusedByte3 = 0,
                  creatureType = 0,
-                 mode = 0,
+                 ability = 0,
                  unusedByte4 = 0,
                  unusedByte5 = 0,
                  unusedByte6 = 0,
-                 modeTimer = 0,
+                 abilityTimer = 0,
                  combo = 0,
                  lastHitTime = 0,
                  appearance = None,
@@ -106,11 +106,11 @@ class Creature():
         self.unusedByte2 = unusedByte2
         self.unusedByte3 = unusedByte3
         self.creatureType = creatureType
-        self.mode = mode
+        self.ability = ability
         self.unusedByte4 = unusedByte4
         self.unusedByte5 = unusedByte5
         self.unusedByte6 = unusedByte6
-        self.modeTimer = modeTimer
+        self.abilityTimer = abilityTimer
         self.combo = combo
         self.lastHitTime = lastHitTime
         self.appearance = appearance
@@ -176,11 +176,11 @@ class Creature():
         unusedByte2, = struct.unpack('<B', data.read(1))
         unusedByte3, = struct.unpack('<B', data.read(1))
         creatureType, = struct.unpack('<I', data.read(4))
-        mode, = struct.unpack('<B', data.read(1))
+        ability, = struct.unpack('<B', data.read(1))
         unusedByte4, = struct.unpack('<B', data.read(1))
         unusedByte5, = struct.unpack('<B', data.read(1))
         unusedByte6, = struct.unpack('<B', data.read(1))
-        modeTimer, = struct.unpack('<i', data.read(4))
+        abilityTimer, = struct.unpack('<i', data.read(4))
         combo, = struct.unpack('<i', data.read(4))
         lastHitTime, = struct.unpack('<i', data.read(4))
         appearance = Appearance.Import(data)
@@ -232,8 +232,8 @@ class Creature():
         manaCubes, = struct.unpack('<i', data.read(4))
         name = ''.join([chr(x) for x in data.read(16).rstrip(b'\x00')]) #this method might be slightly more resilient than a decoder
         return Creature(position, orientation, velocity, acceleration, retreat, headRotation, physicsFlags, hostility,
-                 unusedByte1, unusedByte2, unusedByte3, creatureType, mode, unusedByte4, unusedByte5, unusedByte6,
-                 modeTimer, combo, lastHitTime, appearance, creatureFlags, unusedByte7, unusedByte8, rollTime, stunTime,
+                 unusedByte1, unusedByte2, unusedByte3, creatureType, ability, unusedByte4, unusedByte5, unusedByte6,
+                 abilityTimer, combo, lastHitTime, appearance, creatureFlags, unusedByte7, unusedByte8, rollTime, stunTime,
                  slowedTime, iceEffectTime, windEffectTime, showPatchTime, classType, specialization, unusedByte9,
                  unusedByte10, chargedMP, unkIntVec1, unkIntVec2, rayHit, HP, MP, blockPower, statMultipliers, unkByte1,
                  unkByte2, unusedByte11, unusedByte12, level, XP, parentOwner, unkLong1, powerBase, unusedByte13,
@@ -254,11 +254,11 @@ class Creature():
         dataList.append(struct.pack('<B', self.unusedByte2))
         dataList.append(struct.pack('<B', self.unusedByte3))
         dataList.append(struct.pack('<I', self.creatureType))
-        dataList.append(struct.pack('<B', self.mode))
+        dataList.append(struct.pack('<B', self.ability))
         dataList.append(struct.pack('<B', self.unusedByte4))
         dataList.append(struct.pack('<B', self.unusedByte5))
         dataList.append(struct.pack('<B', self.unusedByte6))
-        dataList.append(struct.pack('<i', self.modeTimer))
+        dataList.append(struct.pack('<i', self.abilityTimer))
         dataList.append(struct.pack('<i', self.combo))
         dataList.append(struct.pack('<i', self.lastHitTime))
         dataList.append(self.appearance.Export())
