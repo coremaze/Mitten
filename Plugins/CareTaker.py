@@ -6,8 +6,7 @@ from Mitten import Configs
 PLUGIN = __name__.split('.')[-1]
 
 class CareTaker():
-    def __init__(self, server, processName, path):
-        self.host, self.port = server
+    def __init__(self, processName, path):
         self.processName = processName
         self.path = path
         self.exe = self.path + self.processName
@@ -55,7 +54,6 @@ class CareTaker():
 # TODO: Instead of using hardcoded value, fetch from global config
 # Initialize the caretaker :)
 caretaker = CareTaker(
-    ('localhost', 12344),
     Configs.GetAttribute(PLUGIN, 'internalExecutableName', 'Server.exe'),
     Configs.GetAttribute(PLUGIN, 'internalExecutablePath', os.path.abspath(
         os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir)
