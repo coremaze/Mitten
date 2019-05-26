@@ -5,7 +5,7 @@ from Packets import *
 from CubeTypes import *
 
 PLUGIN = __name__.split('.')[-1]
-maxBlocksAway = Configs.GetAttribute(PLUGIN, 'maxBlocksAway', (ZONE_SCALE // BLOCK_SCALE) * 2) #Default is 2 zones away
+maxBlocksAway = Configs.GetAttribute(PLUGIN, 'maxBlocksAway', (ZONE_SCALE // BLOCK_SCALE) * 1) #Default is 1 zone1 away
 
 class Player:
     def __init__(self, connection):
