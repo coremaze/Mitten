@@ -14,6 +14,8 @@ class OnPacket():
 class OnServerFailure():
     '''
     Triggered when the server refuses a connection.
+
+    serverSock: The socket which failed to establish a connection to the server.
     '''
     pass
 
