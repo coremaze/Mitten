@@ -2,13 +2,14 @@ import Packets
 import socket
 from threading import Thread
 import struct
+from Mitten import Configs
 import Plugins
 import time
 from Mitten.Constants import *
 from Mitten.Events import *
 PACKETS_CLASSES = Packets.classes
 
-INTERNAL_SERVER = ('localhost', 12344)
+INTERNAL_SERVER = tuple(Configs.GetAttribute('Mitten', 'server', ('localhost', 12344)))
 EXTERNAL_SERVER = ('', 12345)
 
 

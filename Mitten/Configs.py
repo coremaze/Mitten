@@ -1,7 +1,6 @@
 import json
 
 CONFIG = {}
-
 def LoadConfig():
     global CONFIG
     while True:
@@ -16,7 +15,7 @@ def LoadConfig():
     if not data:
         data = '{}'
     CONFIG = json.loads(data)
-    
+    LoadMitten()
 
 def SaveConfig():
     while True:
@@ -39,6 +38,11 @@ def LoadPlugin(plugin):
         CONFIG[string] = {'enabled': True}
     SaveConfig()
 
+def LoadMitten():
+    if 'Mitten' not in CONFIG:
+        CONFIG['Mitten'] = {}
+    SaveConfig()
+    
 def GetAttribute(plugin, attribute, default=None):
     string = PluginName(plugin)
     if attribute not in CONFIG[string]:
@@ -49,4 +53,5 @@ def SetAttribute(plugin, attribute, value):
     string = PluginName(plugin)
     CONFIG[string][attribute] = value
     SaveConfig()
-    
+
+LoadConfig()
