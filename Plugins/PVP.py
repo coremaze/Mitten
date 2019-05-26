@@ -65,7 +65,7 @@ def HandleChat(connection, packet, fromClient):
 def HandleCreatureUpdate(connection, packet, fromClient):
     if fromClient: return
     if 'hostility' not in packet.fields: return
-    fromID = packet.entity_id
+    fromID = packet.guid
     otherConn = GetConnectionByID(fromID)
     if otherConn is None: return
 
