@@ -23,6 +23,8 @@ class Vector3():
         return self.__class__(self.x+other.x, self.y+other.y, self.z+other.z)
     def __sub__(self, other):
         return self.__class__(self.x-other.x, self.y-other.y, self.z-other.z)
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y and self.z == other.z
     def MagnitudeSquared(self):
         return self.x**2 + self.y**2 + self.z**2
     def Magnitude(self):
