@@ -59,8 +59,11 @@ class Connection():
         
     def RecvServer(self, size):
         buf = []
+        total = 0
         while len(buf) < size and not self.closed:
-            buf.append(self.serverSock.recv(size - sum([len(x) for x in buf])))
+            data = self.serverSock.recv(size - total)
+            total += len(data)
+            buf.append(data)
         return b''.join(buf)
 
     def RecvClientWatcher(self, timeout=1.0):
@@ -76,8 +79,11 @@ class Connection():
         else:
             self.clientSock.settimeout(None)
         buf = []
+        total = 0
         while len(buf) < size and not self.closed:
-            buf.append(self.clientSock.recv(size - sum([len(x) for x in buf])))
+            data = self.clientSock.recv(size - total)
+            total += len(data)
+            buf.append(data)
         return b''.join(buf)
 
     def ClientIP(self):
