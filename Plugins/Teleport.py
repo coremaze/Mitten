@@ -1,11 +1,14 @@
 from Mitten.Constants import *
 from Mitten.Events import *
 from Mitten.Alloc import *
+from Mitten import Configs
 from Packets import *
 from CubeTypes import *
 import time
 from threading import Thread
 import random
+
+PLUGIN = __name__.split('.')[-1]
 
 class Player:
     def __init__(self, connection):
@@ -96,6 +99,8 @@ class World:
     def __init__(self):
         self.players = []
         self.chatGUID = GetGUID()
+        self.teleports = Configs.GetAttribute(PLUGIN, 'teleports', [])
+        self.tpsetEnabled = Configs.GetAttribute(PLUGIN, 'tpsetEnabled', True)
 
     def AddPlayer(self, player):
         if type(player) is Player:
@@ -169,8 +174,41 @@ class World:
             player.Teleport(player.spawnPoint)
             return BLOCK
 
-        
+        if msg.startswith('!tpset ') and self.tpsetEnabled:
+            try:
+                _, name = msg.split(' ')
+            except Exception as e:
+                self.SendMessage('Usage: !tpset <name>', player)
+            else:
+                self.SetTeleport(name, player.position)
+                self.SendMessage(f'Created teleport {name}', player)
+            finally:
+                return BLOCK
 
+        if msg.startswith('!tp '):
+            try:
+                _, name = msg.split(' ')
+            except Exception as e:
+                self.SendMessage('Usage: !tp <name>', player)
+            else:
+                if not name.isalnum():
+                    self.SendMessage(f'Invalid name {name}', player)
+                    return BLOCK
+                tp = self.GetTeleport(name)
+                if tp is None:
+                    self.SendMessage(f'Cannot find teleport {name}', player)
+                    return BLOCK
+                else:
+                    self.SendMessage(f'Teleporting to {name}!', player)
+                    player.Teleport(tp)
+            finally:
+                return BLOCK
+
+        if msg  == '!tplist':
+            resp = 'Teleports: ' + ', '.join(self.GetTeleportNames())
+            self.SendMessage(resp, player)
+            return BLOCK
+            
     def HandleCreatureUpdatePacket(self, connection, packet, fromClient):
         player = self.GetPlayerByConnection(connection)
         if player is not None:
@@ -190,6 +228,18 @@ class World:
 
     def SendMessage(self, message, player):
         ChatPacket(message, self.chatGUID).Send(player.connection, toServer=False)
+
+    def SetTeleport(self, name, location):
+        self.teleports.append({'name':name, 'x':location.x, 'y':location.y, 'z':location.z})
+        Configs.SetAttribute(PLUGIN, 'teleports', self.teleports)
+
+    def GetTeleport(self, name):
+        for tp in self.teleports:
+            if tp['name'] == name:
+                return LongVector3(tp['x'], tp['y'], tp['z'])
+
+    def GetTeleportNames(self):
+        return [x['name'] for x in self.teleports]
 
 world = World()
 
