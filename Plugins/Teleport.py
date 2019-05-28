@@ -139,76 +139,89 @@ class World:
     def HandleChatPacket(self, connection, packet, fromClient):
         if not fromClient: return
         player = self.GetPlayerByConnection(connection)
+        if player is None: return
+        
         msg = packet.message.lower()
-        if msg.startswith('!tpz '):
-            try:
-                zoneX, zoneY = tuple(map(int, msg.split()[1:3]))
-            except:
-                self.SendMessage(f'Usage: !tpz <zone x> <zone y>', player)
-            else:
-                x = zoneX * ZONE_SCALE
-                y = zoneY * ZONE_SCALE
-                z = 0
-                player.Teleport(LongVector3(x,y,z))
-            finally:
-                return BLOCK
 
-        if msg.startswith('!goto '):
-            name = msg[len('!goto '):]
-            if name == '':
-                self.SendMessage(f'Usage: !goto <player name>', player)
-                return BLOCK
+        if self.Command('!tpz', msg, player, self.TPZ): return BLOCK
+        if self.Command('!goto', msg, player, self.Goto): return BLOCK
+        if self.Command('!listplayers', msg, player, self.ListPlayers): return BLOCK
+        if self.Command('!tpset', msg, player, self.TPSet): return BLOCK
+        if self.Command('!tp', msg, player, self.TP): return BLOCK
+        if self.Command('!tplist', msg, player, self.TPList): return BLOCK
+
+##Commands##
+    def Command(self, prefix, msg, player, function):
+        #splitting is intensive, so avoid doing it if possible.
+        if not msg.startswith(prefix):
+            return
+        
+        split = msg.split()
+        msgprefix, arguments = split[0], split[1:]
+        if msgprefix == prefix:
+            function(arguments, player)
+            return True
+        return False
+
+    def TPZ(self, arguments, player):
+        try:
+            zoneX, zoneY = tuple(map(int, arguments))
+        except:
+            self.SendMessage(f'Usage: !tpz <zone x> <zone y>', player)
+        else:
+            x = zoneX * ZONE_SCALE
+            y = zoneY * ZONE_SCALE
+            z = 0
+            player.Teleport(LongVector3(x,y,z))
+
+    def Goto(self, arguments, player):
+        name = ' '.join(arguments)
+        if name == '':
+            self.SendMessage(f'Usage: !goto <player name>', player)
+        else:
             otherPlayer = self.GetPlayerByName(name)
             if otherPlayer is None:
                 self.SendMessage(f'Could not find {name}.', player)
             else:
                 self.SendMessage(f'Teleporting to {name}!', player)
                 player.Teleport(otherPlayer.position - LongVector3(0,0,BLOCK_SCALE*3))
-            return BLOCK
 
-        if msg == '!listplayers':
-            self.SendMessage('Players: ' + ', '.join(self.GetPlayerNames()), player)
-            return BLOCK
+    def ListPlayers(self, arguments, player):
+        self.SendMessage('Players: ' + ', '.join(self.GetPlayerNames()), player)
 
-        if msg == '!tpspawn':
-            player.Teleport(player.spawnPoint)
-            return BLOCK
-
-        if msg.startswith('!tpset ') and self.tpsetEnabled:
+    def TPSet(self, arguments, player):
+        if self.tpsetEnabled:
             try:
-                _, name = msg.split(' ')
+                name, = arguments
             except Exception as e:
                 self.SendMessage('Usage: !tpset <name>', player)
             else:
                 self.SetTeleport(name, player.position)
                 self.SendMessage(f'Created teleport {name}', player)
-            finally:
-                return BLOCK
 
-        if msg.startswith('!tp '):
-            try:
-                _, name = msg.split(' ')
-            except Exception as e:
-                self.SendMessage('Usage: !tp <name>', player)
+    def TP(self, arguments, player):
+        try:
+            name, = arguments
+        except Exception as e:
+            self.SendMessage('Usage: !tp <name>', player)
+        else:
+            if not name.isalnum():
+                self.SendMessage(f'Invalid name {name}', player)
+                return
+            tp = self.GetTeleport(name)
+            if tp is None:
+                self.SendMessage(f'Cannot find teleport {name}', player)
+                return
             else:
-                if not name.isalnum():
-                    self.SendMessage(f'Invalid name {name}', player)
-                    return BLOCK
-                tp = self.GetTeleport(name)
-                if tp is None:
-                    self.SendMessage(f'Cannot find teleport {name}', player)
-                    return BLOCK
-                else:
-                    self.SendMessage(f'Teleporting to {name}!', player)
-                    player.Teleport(tp)
-            finally:
-                return BLOCK
+                self.SendMessage(f'Teleporting to {name}!', player)
+                player.Teleport(tp)
 
-        if msg  == '!tplist':
-            resp = 'Teleports: ' + ', '.join(self.GetTeleportNames())
-            self.SendMessage(resp, player)
-            return BLOCK
-            
+    def TPList(self, arguments, player):
+        resp = 'Teleports: ' + ', '.join(self.GetTeleportNames())
+        self.SendMessage(resp, player)
+        
+##End of commands##
+        
     def HandleCreatureUpdatePacket(self, connection, packet, fromClient):
         player = self.GetPlayerByConnection(connection)
         if player is not None:
