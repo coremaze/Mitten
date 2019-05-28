@@ -20,6 +20,7 @@ class Player:
         self.updatingGUIDs = set()
         self.name = ''
         self.spawnPoint = LongVector3(32800*BLOCK_SCALE, 32800*BLOCK_SCALE, 20*BLOCK_SCALE)
+        self.admin = False
 
     def SetPosition(self, position):
         self.position = position.Copy()
@@ -100,7 +101,7 @@ class World:
         self.players = []
         self.chatGUID = GetGUID()
         self.teleports = Configs.GetAttribute(PLUGIN, 'teleports', [])
-        self.tpsetEnabled = Configs.GetAttribute(PLUGIN, 'tpsetEnabled', True)
+        self.tpsetPassword = Configs.GetAttribute(PLUGIN, 'tpsetPassword', 'password')
 
     def AddPlayer(self, player):
         if type(player) is Player:
@@ -147,8 +148,10 @@ class World:
         if self.Command('!goto', msg, player, self.Goto): return BLOCK
         if self.Command('!listplayers', msg, player, self.ListPlayers): return BLOCK
         if self.Command('!tpset', msg, player, self.TPSet): return BLOCK
+        if self.Command('!tpdel', msg, player, self.TPDel): return BLOCK
         if self.Command('!tp', msg, player, self.TP): return BLOCK
         if self.Command('!tplist', msg, player, self.TPList): return BLOCK
+        if self.Command('!tpadmin', msg, player, self.TPAdmin): return BLOCK
 
 ##Commands##
     def Command(self, prefix, msg, player, function):
@@ -190,7 +193,7 @@ class World:
         self.SendMessage('Players: ' + ', '.join(self.GetPlayerNames()), player)
 
     def TPSet(self, arguments, player):
-        if self.tpsetEnabled:
+        if player.admin:
             try:
                 name, = arguments
             except Exception as e:
@@ -198,6 +201,22 @@ class World:
             else:
                 self.SetTeleport(name, player.position)
                 self.SendMessage(f'Created teleport {name}', player)
+        else:
+            self.SendMessage('You may not create teleports.', player)
+
+    def TPDel(self, arguments, player):
+        if player.admin:
+            try:
+                name, = arguments
+            except Exception as e:
+                self.SendMessage('Usage: !tpdel <name>', player)
+            else:
+                if self.DeleteTeleport(name):
+                    self.SendMessage(f'Could not find teleport {name}', player)
+                else:
+                    self.SendMessage(f'Deleted teleport {name}', player)
+        else:
+            self.SendMessage('You may not delete teleports.', player)
 
     def TP(self, arguments, player):
         try:
@@ -219,6 +238,14 @@ class World:
     def TPList(self, arguments, player):
         resp = 'Teleports: ' + ', '.join(self.GetTeleportNames())
         self.SendMessage(resp, player)
+
+    def TPAdmin(self, arguments, player):
+        password = ' '.join(arguments)
+        if password == self.tpsetPassword:
+            self.SendMessage('TP password accepted.', player)
+            player.admin = True
+        else:
+            self.SendMessage('Incorrect TP Password.', player)
         
 ##End of commands##
         
@@ -245,6 +272,15 @@ class World:
     def SetTeleport(self, name, location):
         self.teleports.append({'name':name, 'x':location.x, 'y':location.y, 'z':location.z})
         Configs.SetAttribute(PLUGIN, 'teleports', self.teleports)
+
+    def DeleteTeleport(self, name):
+        match = [x for x in self.teleports if x['name'] == name]
+        if match:
+            self.teleports.remove(match[0])
+            Configs.SetAttribute(PLUGIN, 'teleports', self.teleports)
+            return False
+        else:
+            return True
 
     def GetTeleport(self, name):
         for tp in self.teleports:
