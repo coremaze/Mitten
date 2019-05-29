@@ -130,7 +130,7 @@ class Connection():
                 self.joined = True
 
                 self.HandleAndSendPacket(packet, cache, fromClient=True)
-            except (ConnectionResetError, ConnectionAbortedError):
+            except (ConnectionResetError, ConnectionAbortedError, TimeoutError):
                 self.Close()
             except struct.error:
                 if not self.closed:
