@@ -132,6 +132,9 @@ class Connection():
                 self.HandleAndSendPacket(packet, cache, fromClient=True)
             except (ConnectionResetError, ConnectionAbortedError):
                 self.Close()
+            except struct.error:
+                if not self.closed:
+                    raise
 
        
             
