@@ -19,7 +19,7 @@ class Item():
                  spirits = None,
                  numSpirits = 0):
 
-        if spirits is None: spirits = [Spirit() for _ in range(32)]
+        if spirits is None: spirits = tuple(Spirit() for _ in range(32))
         
         self.itemType = itemType
         self.subType = subType
@@ -50,7 +50,7 @@ class Item():
         unkByte, = struct.unpack('<B', data.read(1))
         level, = struct.unpack('<h', data.read(2))
         unkShort2, = struct.unpack('<h', data.read(2))
-        spirits = [Spirit.Import(data) for _ in range(32)]
+        spirits = tuple(Spirit.Import(data) for _ in range(32))
         numSpirits, = struct.unpack('<I', data.read(4))
         return Item(itemType, subType, unkShort1, modifier, minusModifier, rarity,
                     material, adapted, unkByte, level, unkShort2, spirits, numSpirits)
