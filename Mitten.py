@@ -64,6 +64,7 @@ class Connection():
             data = self.serverSock.recv(size - total)
             total += len(data)
             buf.append(data)
+        if total != size: raise ConnectionResetError("Could not recv full length")
         return b''.join(buf)
 
     def RecvClientWatcher(self, timeout=1.0):
@@ -84,6 +85,7 @@ class Connection():
             data = self.clientSock.recv(size - total)
             total += len(data)
             buf.append(data)
+        if total != size: raise ConnectionResetError("Could not recv full length")
         return b''.join(buf)
 
     def ClientIP(self):
@@ -110,55 +112,66 @@ class Connection():
     
     def HandleClient(self):
         while not self.closed:
+            #Keep track of original packet data, so we don't have to export anything if unchanged
+            cache = ConnectionPacketCache(self)
+            
             try:
-                #Keep track of original packet data, so we don't have to export anything if unchanged
-                cache = ConnectionPacketCache(self)
-                
-                pID, = struct.unpack('<I', cache.RecvClient(4))
-
-                #Find the class for this packet
-                thisClass = self.FindPacketClass(pID, fromClient=True)
+                pIDdata = cache.RecvClient(4)
+            except Exception as e:
+                self.Close()
+                break
+            else:
                 if self.closed: break
 
-                #Get and parse the rest of the packet
-                packet = thisClass.Recv(cache, fromClient=True)
-                if self.closed:
-                    break
+            pID, = struct.unpack('<I', pIDdata)
 
+            #Find the class for this packet
+            thisClass = self.FindPacketClass(pID, fromClient=True)
+            if self.closed: break
+
+            #Get and parse the rest of the packet
+            try:
+                packet = thisClass.Recv(cache, fromClient=True)
                 #Keep track of whether the client sends a packet,
                 #to keep them from holding the main CW server thread
                 self.joined = True
-
                 self.HandleAndSendPacket(packet, cache, fromClient=True)
-            except (ConnectionResetError, ConnectionAbortedError, TimeoutError):
+            except (ConnectionResetError, ConnectionAbortedError, TimeoutError) as e:
                 self.Close()
-            except struct.error:
-                if not self.closed:
-                    raise
-
-       
+                break
+            else:
+                if self.closed: break
             
     def HandleServer(self):
         while not self.closed:
+            #Keep track of whether the packet gets modified, for speed.
+            modified = False
+            cache = ConnectionPacketCache(self)
+
             try:
-                #Keep track of whether the packet gets modified, for speed.
-                modified = False
-                cache = ConnectionPacketCache(self)
-                
-                pID, = struct.unpack('<I', cache.RecvServer(4))
-                
-                #Find the class for this packet
-                thisClass = self.FindPacketClass(pID, fromClient=False)
-                if self.closed: break
-
-                #Get and parse the rest of the packet  
-                packet = thisClass.Recv(cache, fromClient=False)
-
-                self.HandleAndSendPacket(packet, cache, fromClient=False)
-            except (ConnectionResetError, ConnectionAbortedError):
+                pIDdata = cache.RecvServer(4)
+            except Exception as e:
                 self.Close()
+                break
+            else:
+                if self.closed: break
+            
+            pID, = struct.unpack('<I', pIDdata)
+            
+            #Find the class for this packet
+            thisClass = self.FindPacketClass(pID, fromClient=False)
+            if self.closed: break
 
-
+            #Get and parse the rest of the packet
+            try:
+                packet = thisClass.Recv(cache, fromClient=False)
+                self.HandleAndSendPacket(packet, cache, fromClient=False)
+            except (ConnectionResetError, ConnectionAbortedError, TimeoutError) as e:
+                self.Close()
+                break
+            else:
+                if self.closed: break
+                
     def FindPacketClass(self, pID, fromClient):
         #Find the class for this packet
         for packet in PACKETS_CLASSES:
