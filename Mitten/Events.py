@@ -49,12 +49,26 @@ class OnForward():
     return a tuple with ('Server address' portNumber) to have Mitten forward to a different server.
     '''
 
+class OnUnknownPacket():
+    '''
+    Triggered when a packet with an invalid ID is received.
+
+    connection: The Connection receiving the packet
+    packetID: The unknown packet ID
+    fromClient: A bool representing the direction the packet is coming from
+
+    return NO_ACTION or None to have Mitten continue as normal.
+    return BLOCK to have Mitten not continue processing the packet.
+    return a Packet to provide Mitten with a valid packet object.
+    '''
+
 MITTEN_EVENTS = {
     OnPacket: [],
     OnServerFailure: [],
     OnConnect: [],
     OnDisconnect: [],
-    OnForward: []
+    OnForward: [],
+    OnUnknownPacket: []
     }
 
 def Handle(eventType):
