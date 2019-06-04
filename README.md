@@ -2,7 +2,7 @@
 
 Mitten is an easy packet-level modding platform for Cube World which allows for control over a server using plugins.
 
-## Setting up a serer using Mitten
+## Setting up a server using Mitten
 
 Mitten operates as a "man in the middle" between the server and the clients:
 
