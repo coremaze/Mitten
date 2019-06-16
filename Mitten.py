@@ -177,9 +177,16 @@ class Connection():
         for packet in PACKETS_CLASSES:
             if packet.pID == pID:
                 return packet
-        else:
-            print(f"Invalid packet ID from {['Server', 'Client'][fromClient]}: {pID}")
-            self.Close()
+            
+        for handler in MITTEN_EVENTS[OnUnknownPacket]:
+            result = handler(self, pID, fromClient)
+            if issubclass(result, Packets.Packet):
+                return result
+            elif result is BLOCK:
+                break
+            
+        print(f"Invalid packet ID from {['Server', 'Client'][fromClient]}: {pID}")
+        self.Close()
                 
     def Close(self):
         if not self.closed:

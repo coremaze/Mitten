@@ -1,9 +1,12 @@
 import struct
 import io
-from .Packet import Packet
+from Packets import Packet
+from Mitten.Events import *
+
 ZONE_LOAD_PACKET = 1
 ZONE_UNLOAD_PACKET = 2
 BLOCK_PLACE_PACKET = 3
+
 class BuildingModPacket(Packet):
     pID = 1263488066
     @staticmethod
@@ -102,3 +105,8 @@ class BuildingModBlockPlacePacket(BuildingModPacket):
         dataList.append( struct.pack('<B', self.b) )
         dataList.append( struct.pack('<B', self.blockType) )
         return b''.join(dataList)
+
+@Handle(OnUnknownPacket)
+def HandleUnknownPacket(connection, pID, fromClient):
+    if pID == BuildingModPacket.pID:
+        return BuildingModPacket
