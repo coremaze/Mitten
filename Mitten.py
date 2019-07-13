@@ -180,10 +180,12 @@ class Connection():
             
         for handler in MITTEN_EVENTS[OnUnknownPacket]:
             result = handler(self, pID, fromClient)
-            if result is BLOCK or result is None:
-                break
+            if result is None:
+                continue
             if issubclass(result, Packets.Packet):
                 return result
+            elif result is BLOCK
+                break
             
         print(f"Invalid packet ID from {['Server', 'Client'][fromClient]}: {pID}")
         self.Close()
