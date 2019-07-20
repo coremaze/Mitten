@@ -184,7 +184,7 @@ class Connection():
                 continue
             if issubclass(result, Packets.Packet):
                 return result
-            elif result is BLOCK
+            elif result is BLOCK:
                 break
             
         print(f"Invalid packet ID from {['Server', 'Client'][fromClient]}: {pID}")
