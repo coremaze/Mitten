@@ -58,14 +58,18 @@ class Connection():
             self.Close()
         
     def RecvServer(self, size):
-        buf = []
-        total = 0
-        while len(buf) < size and not self.closed:
-            data = self.serverSock.recv(size - total)
-            total += len(data)
-            buf.append(data)
-        if total != size: raise ConnectionResetError("Could not recv full length")
-        return b''.join(buf)
+        try:
+            buf = []
+            total = 0
+            while len(buf) < size and not self.closed:
+                data = self.serverSock.recv(size - total)
+                total += len(data)
+                buf.append(data)
+            if total != size: raise ConnectionResetError("Could not recv full length")
+            return b''.join(buf)
+        except OSError:
+            self.Close()
+            raise ConnectionResetError("Socket not open")
 
     def RecvClientWatcher(self, timeout=1.0):
         initialTime = time.time()
@@ -74,19 +78,23 @@ class Connection():
             self.Close()
     
     def RecvClient(self, size):
-        if not self.joined:
-            self.clientSock.settimeout(1.0)
-            Thread(target=self.RecvClientWatcher).start()
-        else:
-            self.clientSock.settimeout(None)
-        buf = []
-        total = 0
-        while len(buf) < size and not self.closed:
-            data = self.clientSock.recv(size - total)
-            total += len(data)
-            buf.append(data)
-        if total != size: raise ConnectionResetError("Could not recv full length")
-        return b''.join(buf)
+        try:
+            if not self.joined:
+                self.clientSock.settimeout(1.0)
+                Thread(target=self.RecvClientWatcher).start()
+            else:
+                self.clientSock.settimeout(None)
+            buf = []
+            total = 0
+            while len(buf) < size and not self.closed:
+                data = self.clientSock.recv(size - total)
+                total += len(data)
+                buf.append(data)
+            if total != size: raise ConnectionResetError("Could not recv full length")
+            return b''.join(buf)
+        except OSError:
+            self.Close()
+            raise ConnectionResetError("Socket not open")
 
     def ClientIP(self):
         return self.clientAddress
